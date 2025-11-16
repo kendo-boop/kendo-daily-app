@@ -1,0 +1,29 @@
+// いいねボタンの更新
+var likeBtn = document.getElementById('like-btn-<%= @post.id %>');
+if (likeBtn) {
+  likeBtn.outerHTML = '<%= j(
+    link_to unlike_post_path(@post), 
+            data: { turbo_method: :delete },
+            remote: true,
+            class: "post-action-btn liked",
+            id: "like-btn-#{@post.id}" do
+      concat content_tag(:i, "favorite", class: "material-icons")
+      concat content_tag(:span, "いいね")
+    end
+  ) %>';
+}
+
+// いいね数の更新
+var likesCount = document.querySelector('#like-btn-<%= @post.id %>').closest('.post-footer').querySelector('.post-stat-likes span');
+if (likesCount) {
+  likesCount.textContent = '<%= @post.likes_count %>';
+}
+
+// アニメーション効果
+var btn = document.getElementById('like-btn-<%= @post.id %>');
+if (btn) {
+  btn.style.transform = 'scale(1.1)';
+  setTimeout(function() {
+    btn.style.transform = 'scale(1)';
+  }, 200);
+}

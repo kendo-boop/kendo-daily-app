@@ -1,0 +1,1126 @@
+/* スケジュールコンテナ */
+.schedule-container {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+  justify-content: center;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* カレンダーセクション（右側） */
+.calendar-section {
+  flex: 0 0 400px;
+  order: 2;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+/* リストセクション（左側） */
+.list-section {
+  flex: 0 0 400px;
+  order: 1;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+/* カレンダースタイル */
+.calendar-card {
+  position: sticky;
+  top: 20px;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background: linear-gradient(135deg, #33b5e5 0%, #1e88e5 100%);
+  color: white;
+}
+
+.calendar-header h5 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 400;
+}
+
+.today-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.today-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  color: white;
+}
+
+.calendar-nav-btn {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  text-decoration: none;
+}
+
+.calendar-nav-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.calendar-body {
+  padding: 20px;
+}
+
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+  margin-bottom: 10px;
+}
+
+.calendar-weekday {
+  text-align: center;
+  font-size: 12px;
+  color: #9e9e9e;
+  font-weight: 500;
+  padding: 8px 0;
+}
+
+.calendar-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+}
+
+.calendar-day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: #424242;
+  border-radius: 4px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+
+.calendar-day:hover {
+  background: #f5f5f5;
+  color: #424242;
+}
+
+.calendar-day.other-month {
+  color: #bdbdbd;
+}
+
+.calendar-day.today {
+  background: #e3f2fd;
+  color: #1e88e5;
+  font-weight: 600;
+}
+
+.calendar-day.selected {
+  background: linear-gradient(135deg, #33b5e5 0%, #1e88e5 100%);
+  color: white;
+  font-weight: 600;
+}
+
+.calendar-day.has-event::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 5px;
+  height: 5px;
+  background: #33b5e5;
+  border-radius: 50%;
+}
+
+.calendar-day.selected.has-event::after {
+  background: white;
+}
+
+/* カレンダーの空白セル */
+.calendar-day.empty {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+
+/* スケジュールリスト */
+.schedule-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.selected-date {
+  font-size: 18px;
+  color: #424242;
+  font-weight: 500;
+}
+
+.schedules-collection {
+  border: none;
+  margin: 0;
+}
+
+.schedules-collection .collection-item {
+  border: none;
+  border-left: 3px solid #33b5e5;
+  background: #fafafa;
+  margin-bottom: 12px;
+  border-radius: 2px;
+  padding: 16px 20px;
+}
+
+.schedule-item-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.schedule-content {
+  flex: 1;
+}
+
+.schedule-time {
+  display: flex;
+  align-items: center;
+  color: #33b5e5;
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.schedule-time i {
+  font-size: 16px;
+  margin-right: 5px;
+}
+
+.schedule-title {
+  font-size: 15px;
+  color: #424242;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.schedule-location {
+  font-size: 13px;
+  color: #757575;
+  display: flex;
+  align-items: center;
+  margin-top: 5px;
+}
+
+.schedule-location i {
+  font-size: 14px;
+  margin-right: 5px;
+}
+
+.schedule-memo {
+  margin-top: 10px;
+  color: #616161;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.schedule-category-chip {
+  height: 22px;
+  line-height: 22px;
+  font-size: 11px;
+  padding: 0 10px;
+  background: #f5f5f5;
+  border: 1px solid #e0e0e0;
+  margin-top: 8px;
+  display: inline-block;
+  border-radius: 12px;
+}
+
+.schedule-category-chip.practice {
+  background: #e3f2fd;
+  border-color: #90caf9;
+  color: #1565c0;
+}
+
+.schedule-category-chip.tournament {
+  background: #fff3e0;
+  border-color: #ffcc80;
+  color: #e65100;
+}
+
+.schedule-actions {
+  display: flex;
+  gap: 5px;
+}
+
+.schedule-action-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  display: inline-block;
+}
+
+.schedule-action-icon {
+  color: #9e9e9e;
+  font-size: 20px;
+}
+
+.schedule-action-btn:hover .schedule-action-icon {
+  color: #757575;
+}
+
+.schedule-delete-form {
+  display: none;
+}
+
+/* 空のスケジュールメッセージ */
+.schedules-empty-message {
+  text-align: center;
+  color: #9e9e9e;
+  padding: 40px 20px;
+}
+
+.schedules-empty-message i {
+  font-size: 48px;
+  color: #e0e0e0;
+  margin-bottom: 10px;
+  display: block;
+}
+
+/* 削除確認モーダル（TODOと共通） */
+.delete-confirm-icon-wrapper {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.delete-confirm-icon-circle {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto;
+  background: #f5f5f5;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #e0e0e0;
+}
+
+.delete-confirm-icon {
+  font-size: 32px;
+  color: #757575;
+}
+
+.delete-confirm-title {
+  font-size: 18px;
+  font-weight: 400;
+  color: #424242;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.delete-confirm-message {
+  text-align: center;
+  color: #757575;
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 0;
+}
+
+.delete-confirm-todo-name {
+  font-weight: 600;
+  color: #33b5e5;
+}
+
+.delete-confirm-warning {
+  color: #9e9e9e;
+  font-size: 13px;
+}
+
+.delete-modal-footer {
+  padding: 20px 24px 30px 24px;
+  background: #fafafa;
+  border-top: 1px solid #e0e0e0;
+  text-align: center;
+}
+
+.delete-cancel-btn {
+  color: #757575;
+  margin: 0 5px;
+  font-weight: 500;
+  min-width: 120px;
+}
+
+.delete-confirm-btn {
+  background: #757575;
+  border-radius: 25px;
+  font-weight: 500;
+  text-transform: none;
+  margin: 0 5px;
+  min-width: 120px;
+}
+
+.delete-confirm-btn-icon {
+  font-size: 18px;
+}
+
+/* レスポンシブ */
+@media only screen and (max-width: 992px) {
+  .schedule-container {
+    flex-direction: column;
+  }
+
+  .calendar-section {
+    flex: 1;
+    order: 1;
+  }
+
+  .list-section {
+    flex: 1;
+    order: 2;
+  }
+
+  .calendar-card {
+    position: static;
+  }
+}
+
+/* スマホ対応（600px以下） */
+@media only screen and (max-width: 600px) {
+  .schedule-container {
+    gap: 15px;
+    margin-top: 15px;
+    padding: 0 10px;
+  }
+
+  .calendar-section,
+  .list-section {
+    flex: 1 1 100%;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  /* カレンダーヘッダー */
+  .calendar-header {
+    padding: 12px 15px;
+  }
+
+  .calendar-header h5 {
+    font-size: 16px;
+  }
+
+  .today-btn {
+    padding: 3px 10px;
+    font-size: 11px;
+  }
+
+  .calendar-nav-btn {
+    width: 28px;
+    height: 28px;
+  }
+
+  .calendar-nav-btn i {
+    font-size: 20px;
+  }
+
+  /* カレンダー本体 */
+  .calendar-body {
+    padding: 15px;
+  }
+
+  .calendar-weekday {
+    font-size: 11px;
+    padding: 6px 0;
+  }
+
+  .calendar-days {
+    gap: 3px;
+  }
+
+  .calendar-day {
+    font-size: 12px;
+  }
+
+  .calendar-day.has-event::after {
+    width: 4px;
+    height: 4px;
+    bottom: 3px;
+  }
+
+  /* スケジュールリスト */
+  .schedule-list-header {
+    margin-bottom: 12px;
+  }
+
+  .selected-date {
+    font-size: 16px;
+  }
+
+  .selected-date i {
+    font-size: 18px;
+  }
+
+  .schedules-collection .collection-item {
+    padding: 14px 16px;
+    margin-bottom: 10px;
+  }
+
+  .schedule-time {
+    font-size: 13px;
+  }
+
+  .schedule-time i {
+    font-size: 15px;
+  }
+
+  .schedule-title {
+    font-size: 14px;
+    margin-bottom: 6px;
+  }
+
+  .schedule-location {
+    font-size: 12px;
+  }
+
+  .schedule-location i {
+    font-size: 13px;
+  }
+
+  .schedule-memo {
+    font-size: 12px;
+    margin-top: 8px;
+  }
+
+  .schedule-category-chip {
+    height: 20px;
+    line-height: 20px;
+    font-size: 10px;
+    padding: 0 8px;
+    margin-top: 6px;
+  }
+
+  .schedule-action-icon {
+    font-size: 18px;
+  }
+
+  /* 空のメッセージ */
+  .schedules-empty-message {
+    padding: 30px 15px;
+  }
+
+  .schedules-empty-message i {
+    font-size: 40px;
+  }
+
+  .schedules-empty-message p {
+    font-size: 13px;
+  }
+
+  /* カードアクション */
+  .card-action a {
+    font-size: 14px;
+  }
+
+  .card-action i {
+    font-size: 18px;
+  }
+
+  /* モーダル */
+  .modal {
+    max-width: 90% !important;
+    width: 90% !important;
+  }
+
+  .modal-content h4 {
+    font-size: 18px !important;
+    margin-bottom: 15px !important;
+  }
+
+  .modal-content {
+    padding: 20px 15px !important;
+  }
+
+  .input-field label {
+    font-size: 13px;
+  }
+
+  .input-field input,
+  .input-field textarea {
+    font-size: 14px;
+  }
+
+  /* 削除確認モーダル */
+  .delete-confirm-icon-circle {
+    width: 50px;
+    height: 50px;
+  }
+
+  .delete-confirm-icon {
+    font-size: 28px;
+  }
+
+  .delete-confirm-title {
+    font-size: 16px;
+    margin-bottom: 12px;
+  }
+
+  .delete-confirm-message {
+    font-size: 13px;
+  }
+
+  .delete-modal-footer {
+    padding: 15px 15px 20px 15px;
+  }
+
+  .delete-cancel-btn,
+  .delete-confirm-btn {
+    min-width: 100px;
+    font-size: 14px;
+  }
+
+  .delete-confirm-btn-icon {
+    font-size: 16px;
+  }
+}
+
+/* 500px以下の追加調整 */
+@media only screen and (max-width: 500px) {
+  .schedule-container {
+    gap: 10px;
+    padding: 0 7px;
+    overflow-x: hidden;
+  }
+
+  .calendar-section,
+  .list-section {
+    width: 100%;
+  }
+
+  /* カードのパディング調整 */
+  .card {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .card-content {
+    padding: 13px 10px;
+  }
+
+  .card-action {
+    padding: 10px 12px;
+  }
+
+  .card-action a {
+    font-size: 12px;
+  }
+
+  .card-action i {
+    font-size: 15px;
+  }
+
+  /* カレンダーヘッダー */
+  .calendar-header {
+    padding: 8px 10px;
+    flex-wrap: nowrap;
+  }
+
+  .calendar-header h5 {
+    font-size: 13px;
+  }
+
+  .today-btn {
+    padding: 2px 7px;
+    font-size: 8px;
+    border-radius: 10px;
+  }
+
+  .calendar-nav-btn {
+    width: 22px;
+    height: 22px;
+  }
+
+  .calendar-nav-btn i {
+    font-size: 17px;
+  }
+
+  /* カレンダー本体 */
+  .calendar-body {
+    padding: 10px;
+  }
+
+  .calendar-weekday {
+    font-size: 8px;
+    padding: 4px 0;
+  }
+
+  .calendar-days {
+    gap: 2px;
+  }
+
+  .calendar-day {
+    font-size: 10px;
+  }
+
+  .calendar-day.has-event::after {
+    width: 3px;
+    height: 3px;
+    bottom: 2px;
+  }
+
+  /* スケジュールリスト */
+  .schedule-list-header {
+    margin-bottom: 10px;
+  }
+
+  .selected-date {
+    font-size: 13px;
+  }
+
+  .selected-date i {
+    font-size: 15px;
+  }
+
+  .schedules-collection .collection-item {
+    padding: 10px 11px;
+    margin-bottom: 8px;
+  }
+
+  .schedule-time {
+    font-size: 10px;
+    margin-bottom: 7px;
+  }
+
+  .schedule-time i {
+    font-size: 13px;
+  }
+
+  .schedule-title {
+    font-size: 11px;
+    margin-bottom: 5px;
+  }
+
+  .schedule-location {
+    font-size: 9px;
+    margin-top: 4px;
+  }
+
+  .schedule-location i {
+    font-size: 12px;
+  }
+
+  .schedule-memo {
+    font-size: 9px;
+    margin-top: 7px;
+  }
+
+  .schedule-category-chip {
+    height: 16px;
+    line-height: 16px;
+    font-size: 8px;
+    padding: 0 7px;
+    margin-top: 5px;
+    border-radius: 10px;
+  }
+
+  .schedule-action-icon {
+    font-size: 14px;
+  }
+
+  /* 空のメッセージ */
+  .schedules-empty-message {
+    padding: 28px 14px;
+  }
+
+  .schedules-empty-message i {
+    font-size: 33px;
+  }
+
+  .schedules-empty-message p {
+    font-size: 11px;
+  }
+
+  /* モーダル */
+  .modal {
+    max-width: 90% !important;
+    width: 90% !important;
+  }
+
+  .modal-content {
+    padding: 14px 11px !important;
+  }
+
+  .modal-content h4 {
+    font-size: 14px !important;
+    margin-bottom: 14px !important;
+  }
+
+  .input-field {
+    margin-bottom: 14px;
+  }
+
+  .input-field label {
+    font-size: 10px;
+  }
+
+  .input-field input,
+  .input-field textarea {
+    font-size: 10px;
+  }
+
+  /* セレクト・時刻フィールド */
+  .browser-default,
+  input[type="time"] {
+    height: 29px !important;
+    padding: 6px !important;
+    font-size: 10px !important;
+  }
+
+  .row {
+    margin-bottom: 7px;
+  }
+
+  .row .col {
+    padding: 0 6px;
+  }
+
+  .row label {
+    font-size: 10px;
+    margin-bottom: 5px;
+  }
+
+  .btn {
+    height: 29px !important;
+    line-height: 29px !important;
+    font-size: 11px;
+  }
+
+  /* 削除確認モーダル */
+  .delete-confirm-icon-circle {
+    width: 42px;
+    height: 42px;
+  }
+
+  .delete-confirm-icon {
+    font-size: 22px;
+  }
+
+  .delete-confirm-title {
+    font-size: 13px;
+    margin-bottom: 10px;
+  }
+
+  .delete-confirm-message {
+    font-size: 10px;
+  }
+
+  .delete-confirm-warning {
+    font-size: 9px;
+  }
+
+  .delete-modal-footer {
+    padding: 14px 17px 21px 17px;
+  }
+
+  .delete-cancel-btn,
+  .delete-confirm-btn {
+    min-width: 84px;
+    font-size: 11px;
+    height: 29px;
+    line-height: 29px;
+  }
+
+  .delete-confirm-btn-icon {
+    font-size: 13px;
+  }
+
+  .modal-footer {
+    padding: 8px 10px;
+  }
+
+  .modal-footer .btn-flat {
+    font-size: 11px;
+  }
+}
+
+/* 375px以下（小型スマホ） */
+@media only screen and (max-width: 375px) {
+  .schedule-container {
+    gap: 8px;
+    padding: 0 5px;
+  }
+
+  /* カードのパディング調整 */
+  .card-content {
+    padding: 10px 8px;
+  }
+
+  .card-action {
+    padding: 8px 10px;
+  }
+
+  .card-action a {
+    font-size: 10px;
+  }
+
+  .card-action i {
+    font-size: 13px;
+  }
+
+  /* カレンダーヘッダー */
+  .calendar-header {
+    padding: 7px 8px;
+  }
+
+  .calendar-header h5 {
+    font-size: 11px;
+  }
+
+  .today-btn {
+    padding: 2px 6px;
+    font-size: 7px;
+    border-radius: 8px;
+  }
+
+  .calendar-nav-btn {
+    width: 19px;
+    height: 19px;
+  }
+
+  .calendar-nav-btn i {
+    font-size: 15px;
+  }
+
+  /* カレンダー本体 */
+  .calendar-body {
+    padding: 8px;
+  }
+
+  .calendar-weekday {
+    font-size: 7px;
+    padding: 3px 0;
+  }
+
+  .calendar-days {
+    gap: 1px;
+  }
+
+  .calendar-day {
+    font-size: 8px;
+  }
+
+  .calendar-day.has-event::after {
+    width: 2px;
+    height: 2px;
+    bottom: 2px;
+  }
+
+  /* スケジュールリスト */
+  .schedule-list-header {
+    margin-bottom: 8px;
+  }
+
+  .selected-date {
+    font-size: 11px;
+  }
+
+  .selected-date i {
+    font-size: 13px;
+  }
+
+  .schedules-collection .collection-item {
+    padding: 8px 9px;
+    margin-bottom: 6px;
+  }
+
+  .schedule-time {
+    font-size: 8px;
+    margin-bottom: 5px;
+  }
+
+  .schedule-time i {
+    font-size: 11px;
+  }
+
+  .schedule-title {
+    font-size: 9px;
+    margin-bottom: 4px;
+  }
+
+  .schedule-location {
+    font-size: 7px;
+    margin-top: 3px;
+  }
+
+  .schedule-location i {
+    font-size: 9px;
+  }
+
+  .schedule-memo {
+    font-size: 7px;
+    margin-top: 5px;
+    line-height: 1.5;
+  }
+
+  .schedule-category-chip {
+    height: 14px;
+    line-height: 14px;
+    font-size: 7px;
+    padding: 0 5px;
+    margin-top: 4px;
+    border-radius: 8px;
+  }
+
+  .schedule-actions {
+    gap: 3px;
+  }
+
+  .schedule-action-btn {
+    padding: 3px;
+  }
+
+  .schedule-action-icon {
+    font-size: 12px;
+  }
+
+  /* 空のメッセージ */
+  .schedules-empty-message {
+    padding: 22px 11px;
+  }
+
+  .schedules-empty-message i {
+    font-size: 28px;
+    margin-bottom: 7px;
+  }
+
+  .schedules-empty-message p {
+    font-size: 9px;
+  }
+
+  /* モーダル */
+  .modal-content {
+    padding: 11px 8px !important;
+  }
+
+  .modal-content h4 {
+    font-size: 12px !important;
+    margin-bottom: 11px !important;
+  }
+
+  .input-field {
+    margin-bottom: 11px;
+  }
+
+  .input-field label {
+    font-size: 8px;
+  }
+
+  .input-field input,
+  .input-field textarea {
+    font-size: 8px;
+  }
+
+  .materialize-textarea {
+    min-height: 40px;
+  }
+
+  /* セレクト・時刻フィールド */
+  .browser-default,
+  input[type="time"] {
+    height: 24px !important;
+    padding: 4px !important;
+    font-size: 8px !important;
+  }
+
+  .row {
+    margin-bottom: 6px;
+  }
+
+  .row .col {
+    padding: 0 5px;
+  }
+
+  .row label {
+    font-size: 8px;
+    margin-bottom: 4px;
+  }
+
+  .btn {
+    height: 24px !important;
+    line-height: 24px !important;
+    font-size: 9px;
+  }
+
+  /* 削除確認モーダル */
+  .delete-confirm-icon-wrapper {
+    margin-bottom: 14px;
+  }
+
+  .delete-confirm-icon-circle {
+    width: 34px;
+    height: 34px;
+    border: 1px solid #e0e0e0;
+  }
+
+  .delete-confirm-icon {
+    font-size: 18px;
+  }
+
+  .delete-confirm-title {
+    font-size: 10px;
+    margin-bottom: 8px;
+  }
+
+  .delete-confirm-message {
+    font-size: 8px;
+  }
+
+  .delete-confirm-warning {
+    font-size: 7px;
+  }
+
+  .delete-modal-footer {
+    padding: 11px 13px 17px 13px;
+  }
+
+  .delete-cancel-btn,
+  .delete-confirm-btn {
+    min-width: 67px;
+    font-size: 9px;
+    padding: 0 8px;
+    height: 24px;
+    line-height: 24px;
+  }
+
+  .delete-confirm-btn-icon {
+    font-size: 11px;
+  }
+
+  .modal-footer {
+    padding: 7px 8px;
+  }
+
+  .modal-footer .btn-flat {
+    font-size: 9px;
+  }
+}

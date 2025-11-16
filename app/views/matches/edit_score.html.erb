@@ -1,0 +1,439 @@
+<%= stylesheet_link_tag "matches_score", "data-turbo-track": "reload" %>
+<%= javascript_include_tag "matches_score/app", defer: true %>
+<%= javascript_include_tag "matches_score/renderer", defer: true %>
+<%= javascript_include_tag "matches_score/handlers", defer: true %>
+<%= javascript_include_tag "matches_score/api", defer: true %>
+<%= javascript_include_tag "matches_score/sync_inputs", defer: true %>
+<%= javascript_include_tag "matches_score", defer: true %>
+
+<!-- ヘッダー -->
+<div class="score-header">
+  <div class="header-left">
+    <%= link_to matches_path, class: "back-btn" do %>
+      <i class="material-icons">arrow_back</i>
+      戻る
+    <% end %>
+    <div class="match-info">
+      <input type="text" class="match-title-edit" value="<%= @match.title %>" data-field="title" placeholder="試合名を入力">
+      <div class="match-meta">
+        <span class="match-type-badge"><%= @match.individual? ? '個人戦' : '団体戦' %></span>
+        <input type="date" class="match-date-edit" value="<%= @match.match_date %>" data-field="match_date">
+      </div>
+    </div>
+  </div>
+  <div class="header-actions">
+    <%= link_to match_path(@match), data: { turbo_method: :delete, turbo_confirm: "本当に削除しますか？" }, class: "btn btn-secondary" do %>
+      <i class="material-icons" style="font-size: 18px;">delete</i>
+      削除
+    <% end %>
+    <button class="btn btn-primary" onclick="saveScore()">
+      <i class="material-icons" style="font-size: 18px;">save</i>
+      保存
+    </button>
+  </div>
+</div>
+
+<% if @match.team? %>
+  <!-- 代表戦ボタン -->
+  <div style="text-align: right; margin-bottom: 12px; max-width: 1100px; margin-left: auto; margin-right: auto; padding: 0 24px;">
+    <button class="btn btn-secondary" id="toggleDaihyosenBtn" onclick="toggleDaihyosen()" style="font-size: 13px; padding: 8px 16px;">
+      <i class="material-icons" style="font-size: 16px;">add</i>
+      代表戦を追加
+    </button>
+  </div>
+
+  <!-- デスクトップ用スコア表（601px以上） -->
+  <div class="score-container desktop-only">
+    <div class="score-table-wrapper">
+      <table class="score-table">
+        <thead>
+          <tr>
+            <th style="width: 100px;">チーム名</th>
+            <th style="width: 110px;">先鋒</th>
+            <th style="width: 110px;">次鋒</th>
+            <th style="width: 110px;">中堅</th>
+            <th style="width: 110px;">副将</th>
+            <th style="width: 110px;">大将</th>
+            <th style="width: 90px;">本数/勝数</th>
+            <th id="daihyosen-header" style="width: 110px; display: none;">代表戦</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- 自チーム -->
+          <tr>
+            <td class="team-cell editable-cell" rowspan="2">
+              <input type="text" value="<%= @score.my_team_name %>" placeholder="チーム名" data-field="my_team_name" style="height: 200px;">
+            </td>
+            <% @team_members.each do |member| %>
+              <td class="editable-cell">
+                <input type="text" value="<%= member.my_member_name %>" placeholder="選手名" data-member="<%= member.id %>" data-field="my_member_name">
+              </td>
+            <% end %>
+            <td class="total-score-cell" rowspan="2" id="my-total-score">
+              <div class="<%= @score.win? ? 'score-winner' : 'score-loser' %>">
+                <div class="score-fraction">
+                  <div class="score-numerator"><%= @score.my_total_points %></div>
+                  <div class="score-line"></div>
+                  <div class="score-denominator"><%= @score.my_win_count %></div>
+                </div>
+              </div>
+            </td>
+            <td id="daihyosen-my-name" class="editable-cell" style="display: none;">
+              <input type="text" value="<%= @daihyosen_member&.my_member_name || '' %>" placeholder="選手名" data-field="daihyosen_my_member_name">
+            </td>
+          </tr>
+          
+          <!-- 自チーム技記録 -->
+          <tr>
+            <% @team_members.each_with_index do |member, index| %>
+              <td class="points-cell" data-member-id="<%= member.id %>" data-team="my" data-position="<%= index %>" onclick="openTechPanel(this)">
+                <div class="points-content" id="cell-my-<%= index %>"></div>
+              </td>
+            <% end %>
+            <td id="daihyosen-my-cell" class="points-cell" data-team="my" data-position="daihyosen" onclick="openTechPanel(this)" style="display: none;">
+              <div class="points-content" id="cell-my-daihyosen"></div>
+            </td>
+          </tr>
+          
+          <!-- 相手チーム技記録 -->
+          <tr>
+            <td class="team-cell editable-cell" rowspan="2">
+              <input type="text" value="<%= @score.opponent_team_name %>" placeholder="チーム名" data-field="opponent_team_name">
+            </td>
+            <% @team_members.each_with_index do |member, index| %>
+              <td class="points-cell" data-member-id="<%= member.id %>" data-team="opponent" data-position="<%= index %>" onclick="openTechPanel(this)">
+                <div class="points-content" id="cell-opponent-<%= index %>"></div>
+              </td>
+            <% end %>
+            <td class="total-score-cell" rowspan="2" id="opponent-total-score">
+              <div class="<%= @score.lose? ? 'score-winner' : 'score-loser' %>">
+                <div class="score-fraction">
+                  <div class="score-numerator"><%= @score.opponent_total_points %></div>
+                  <div class="score-line"></div>
+                  <div class="score-denominator"><%= @score.opponent_win_count %></div>
+                </div>
+              </div>
+            </td>
+            <td id="daihyosen-opponent-cell" class="points-cell" data-team="opponent" data-position="daihyosen" onclick="openTechPanel(this)" style="display: none;">
+              <div class="points-content" id="cell-opponent-daihyosen"></div>
+            </td>
+          </tr>
+          
+          <!-- 相手チーム選手名 -->
+          <tr>
+            <% @team_members.each do |member| %>
+              <td class="editable-cell">
+                <input type="text" value="<%= member.opponent_member_name %>" placeholder="選手名" data-member="<%= member.id %>" data-field="opponent_member_name">
+              </td>
+            <% end %>
+            <td id="daihyosen-opponent-name" class="editable-cell" style="display: none;">
+              <input type="text" value="<%= @daihyosen_member&.opponent_member_name || '' %>" placeholder="選手名" data-field="daihyosen_opponent_member_name">
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- モバイル用スコア表（600px以下） -->
+  <div class="score-container mobile-only">
+    <div class="score-table-wrapper">
+      <table class="score-table mobile-score-table">
+        <thead>
+          <tr>
+            <th class="mobile-corner-cell">
+              <div class="vertical-text">チーム名</div>
+            </th>
+            <th class="mobile-team-header" colspan="2">
+              <input type="text" value="<%= @score.my_team_name %>" placeholder="自チーム" data-field="my_team_name" class="mobile-team-input">
+            </th>
+            <th class="mobile-team-header" colspan="2">
+              <input type="text" value="<%= @score.opponent_team_name %>" placeholder="相手チーム" data-field="opponent_team_name" class="mobile-team-input">
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @team_members.each_with_index do |member, index| %>
+            <% position_names = ['先鋒', '次鋒', '中堅', '副将', '大将'] %>
+            <tr>
+              <td class="mobile-position-cell">
+                <div class="vertical-text"><%= position_names[index] %></div>
+              </td>
+              <td class="mobile-player-name-cell">
+                <input type="text" value="<%= member.my_member_name %>" placeholder="選手名" data-member="<%= member.id %>" data-field="my_member_name">
+              </td>
+              <td class="points-cell mobile-points" data-member-id="<%= member.id %>" data-team="my" data-position="<%= index %>" onclick="openTechPanel(this)">
+                <div class="points-content" id="cell-my-mobile-<%= index %>"></div>
+              </td>
+              <td class="points-cell mobile-points" data-member-id="<%= member.id %>" data-team="opponent" data-position="<%= index %>" onclick="openTechPanel(this)">
+                <div class="points-content" id="cell-opponent-mobile-<%= index %>"></div>
+              </td>
+              <td class="mobile-player-name-cell">
+                <input type="text" value="<%= member.opponent_member_name %>" placeholder="選手名" data-member="<%= member.id %>" data-field="opponent_member_name">
+              </td>
+            </tr>
+          <% end %>
+          
+          <!-- 代表戦行 -->
+          <tr id="mobile-daihyosen-row" style="display: none;">
+            <td class="mobile-position-cell">
+              <div class="vertical-text">代表戦</div>
+            </td>
+            <td class="mobile-player-name-cell">
+              <input type="text" value="<%= @daihyosen_member&.my_member_name || '' %>" placeholder="選手名" data-field="daihyosen_my_member_name">
+            </td>
+            <td class="points-cell mobile-points" data-team="my" data-position="daihyosen" onclick="openTechPanel(this)">
+              <div class="points-content" id="cell-my-mobile-daihyosen"></div>
+            </td>
+            <td class="points-cell mobile-points" data-team="opponent" data-position="daihyosen" onclick="openTechPanel(this)">
+              <div class="points-content" id="cell-opponent-mobile-daihyosen"></div>
+            </td>
+            <td class="mobile-player-name-cell">
+              <input type="text" value="<%= @daihyosen_member&.opponent_member_name || '' %>" placeholder="選手名" data-field="daihyosen_opponent_member_name">
+            </td>
+          </tr>
+          
+          <!-- 合計スコア行 -->
+          <tr>
+            <td class="mobile-position-cell">
+              <div class="vertical-text">本数/勝数</div>
+            </td>
+            <td class="total-score-cell mobile-score" colspan="2" id="my-total-score-mobile">
+              <div class="<%= @score.win? ? 'score-winner' : 'score-loser' %>">
+                <div class="score-fraction">
+                  <div class="score-numerator"><%= @score.my_total_points %></div>
+                  <div class="score-line"></div>
+                  <div class="score-denominator"><%= @score.my_win_count %></div>
+                </div>
+              </div>
+            </td>
+            <td class="total-score-cell mobile-score" colspan="2" id="opponent-total-score-mobile">
+              <div class="<%= @score.lose? ? 'score-winner' : 'score-loser' %>">
+                <div class="score-fraction">
+                  <div class="score-numerator"><%= @score.opponent_total_points %></div>
+                  <div class="score-line"></div>
+                  <div class="score-denominator"><%= @score.opponent_win_count %></div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 技入力パネル -->
+  <div class="tech-panel" id="techPanel">
+    <div class="tech-panel-title">技を入力してください</div>
+    <div class="tech-buttons">
+      <button class="tech-btn" onclick="addTech('men')">メ<br><small style="font-size:10px;">面</small></button>
+      <button class="tech-btn" onclick="addTech('kote')">コ<br><small style="font-size:10px;">小手</small></button>
+      <button class="tech-btn" onclick="addTech('do')">ド<br><small style="font-size:10px;">胴</small></button>
+      <button class="tech-btn" onclick="addTech('tsuki')">ツ<br><small style="font-size:10px;">突き</small></button>
+    </div>
+    
+    <div class="hansoku-buttons">
+      <button class="hansoku-btn" onclick="addHansoku()">
+        <span style="font-size: 20px;">▲</span><br>
+        <small style="font-size: 11px;">反則</small>
+      </button>
+    </div>
+    
+    <div class="special-buttons">
+      <button class="special-btn" onclick="addSpecial('encho')">延長</button>
+      <%# <button class="special-btn" onclick="addSpecial('hantei')">判定</button> %>
+      <button class="special-btn" onclick="addSpecial('ipponkachi')">1本勝ち</button> 
+      <button class="special-btn" onclick="addSpecial('fusenshow')">不戦勝</button>
+      <button class="special-btn" onclick="addSpecial('draw')">引き分け</button>
+    </div>
+    <div class="panel-actions">
+      <button class="undo-btn" onclick="undoLastAction()">1つ戻る</button>
+      <button class="clear-btn" onclick="clearCell()">クリア</button>
+      <button class="close-btn" onclick="closeTechPanel()">閉じる</button>
+    </div>
+  </div>
+
+  <!-- データを埋め込むscriptタグ -->
+  <script id="team-members-data" type="application/json">
+    <%= raw @team_members.sort_by { |m| 
+      ['senpo', 'jiho', 'chuken', 'fukusho', 'taisho'].index(m.position) || 999 
+    }.map { |m| 
+      { 
+        id: m.id, 
+        position: m.position, 
+        points_history: m.points_history,
+        is_draw: m.is_draw || false,
+        is_encho: m.is_encho || false,
+        is_fusenshow: m.is_fusenshow || false,
+        is_hantei: m.is_hantei || false,
+        hansoku_count_my: m.hansoku_count_my || 0,
+        hansoku_count_opponent: m.hansoku_count_opponent || 0
+      } 
+    }.to_json %>
+  </script>
+  
+  <script id="match-data" type="application/json">
+    {
+      "matchId": <%= @match.id %>,
+      "updateScorePath": "<%= update_score_match_path(@match) %>",
+      "matchesPath": "<%= matches_path %>",
+      "csrfToken": "<%= form_authenticity_token %>",
+      "matchType": "team",
+      "hasDaihyosen": <%= @score.has_daihyosen || false %>
+    }
+  </script>
+
+  <script id="daihyosen-data" type="application/json">
+    <% daihyosen_member = @daihyosen_member %>
+    <%= raw (daihyosen_member ? {
+      id: daihyosen_member.id,
+      position: 'daihyosen',
+      my_member_name: daihyosen_member.my_member_name || '',
+      opponent_member_name: daihyosen_member.opponent_member_name || '',
+      points_history: daihyosen_member.points_history,
+      is_draw: daihyosen_member.is_draw || false,
+      is_encho: daihyosen_member.is_encho || false,
+      is_fusenshow: daihyosen_member.is_fusenshow || false,
+      is_hantei: daihyosen_member.is_hantei || false,
+      hansoku_count_my: daihyosen_member.hansoku_count_my || 0,
+      hansoku_count_opponent: daihyosen_member.hansoku_count_opponent || 0
+    } : {
+      id: nil,
+      position: 'daihyosen',
+      my_member_name: '',
+      opponent_member_name: '',
+      points_history: [],
+      is_draw: false,
+      is_encho: false,
+      is_fusenshow: false,
+      is_hantei: false,
+      hansoku_count_my: 0,
+      hansoku_count_opponent: 0
+    }).to_json %>
+  </script>
+
+<% else %>
+  <!-- 個人戦スコア表 -->
+  <div class="score-container">
+    <div class="score-table-wrapper">
+      <table class="score-table individual-table">
+        <thead>
+          <tr>
+            <th>チーム名</th>
+            <th>選手</th>
+            <th>本数/勝数</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- 自チーム -->
+          <tr>
+            <td class="team-cell editable-cell" rowspan="2">
+              <input type="text" value="<%= @score.my_team_name %>" placeholder="チーム名" data-field="individual_my_team_name">
+            </td>
+            <td class="editable-cell">
+              <input type="text" value="<%= @score.my_name %>" placeholder="選手名" data-field="individual_my_name">
+            </td>
+            <td class="total-score-cell" rowspan="2" id="individual-my-score">
+              <div class="score-winner">
+                <div class="score-fraction">
+                  <div class="score-numerator">0</div>
+                  <div class="score-line"></div>
+                  <div class="score-denominator">0</div>
+                </div>
+              </div>
+            </td>
+          </tr>
+          
+          <!-- 自チーム技記録 -->
+          <tr>
+            <td class="points-cell" data-team="my" data-position="individual" onclick="openTechPanel(this)">
+              <div class="points-content" id="cell-my-individual"></div>
+            </td>
+          </tr>
+          
+          <!-- 相手チーム技記録 -->
+          <tr>
+            <td class="team-cell editable-cell" rowspan="2">
+              <input type="text" value="<%= @score.opponent_team_name %>" placeholder="チーム名" data-field="individual_opponent_team_name">
+            </td>
+            <td class="points-cell" data-team="opponent" data-position="individual" onclick="openTechPanel(this)">
+              <div class="points-content" id="cell-opponent-individual"></div>
+            </td>
+            <td class="total-score-cell" rowspan="2" id="individual-opponent-score">
+              <div class="score-loser">
+                <div class="score-fraction">
+                  <div class="score-numerator">0</div>
+                  <div class="score-line"></div>
+                  <div class="score-denominator">0</div>
+                </div>
+              </div>
+            </td>
+          </tr>
+          
+          <!-- 相手チーム選手名 -->
+          <tr>
+            <td class="editable-cell">
+              <input type="text" value="<%= @score.opponent_name %>" placeholder="選手名" data-field="individual_opponent_name">
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 技入力パネル（個人戦） -->
+  <div class="tech-panel" id="techPanel">
+    <div class="tech-panel-title">技を入力してください</div>
+    <div class="tech-buttons">
+      <button class="tech-btn" onclick="addTech('men')">メ<br><small style="font-size:10px;">面</small></button>
+      <button class="tech-btn" onclick="addTech('kote')">コ<br><small style="font-size:10px;">小手</small></button>
+      <button class="tech-btn" onclick="addTech('do')">ド<br><small style="font-size:10px;">胴</small></button>
+      <button class="tech-btn" onclick="addTech('tsuki')">ツ<br><small style="font-size:10px;">突き</small></button>
+    </div>
+    
+    <div class="hansoku-buttons">
+      <button class="hansoku-btn" onclick="addHansoku()">
+        <span style="font-size: 20px;">▲</span><br>
+        <small style="font-size: 11px;">反則</small>
+      </button>
+    </div>
+    
+    <div class="special-buttons">
+      <button class="special-btn" onclick="addSpecial('encho')">延長</button>
+      <button class="special-btn" onclick="addSpecial('hantei')">判定</button>
+      <button class="special-btn" onclick="addSpecial('ipponkachi')">1本勝ち</button> 
+      <button class="special-btn" onclick="addSpecial('fusenshow')">不戦勝</button>
+      <button class="special-btn" onclick="addSpecial('draw')">引き分け</button>
+    </div>
+    <div class="panel-actions">
+      <button class="undo-btn" onclick="undoLastAction()">1つ戻る</button>
+      <button class="clear-btn" onclick="clearCell()">クリア</button>
+      <button class="close-btn" onclick="closeTechPanel()">閉じる</button>
+    </div>
+  </div>
+
+  <!-- 個人戦データを埋め込むscriptタグ -->
+  <script id="individual-score-data" type="application/json">
+    {
+      "my_name": "<%= @score.my_name %>",
+      "opponent_name": "<%= @score.opponent_name %>",
+      "points_history": <%= raw @score.points_history.to_json %>,
+      "is_draw": <%= @score.is_draw %>,
+      "is_encho": <%= @score.is_encho %>,
+      "is_fusenshow": <%= @score.is_fusenshow %>,
+      "is_hantei": <%= @score.is_hantei %>,
+      "hansoku_count_my": <%= @score.hansoku_count_my %>,
+      "hansoku_count_opponent": <%= @score.hansoku_count_opponent %>
+    }
+  </script>
+  
+  <script id="match-data" type="application/json">
+    {
+      "matchId": <%= @match.id %>,
+      "updateScorePath": "<%= update_score_match_path(@match) %>",
+      "matchesPath": "<%= matches_path %>",
+      "csrfToken": "<%= form_authenticity_token %>",
+      "matchType": "individual"
+    }
+  </script>
+<% end %>

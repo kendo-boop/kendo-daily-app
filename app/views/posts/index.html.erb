@@ -1,0 +1,460 @@
+<div class="row">
+  <div class="col s12 m10 offset-m1 l8 offset-l2">
+    
+    <!-- タブ切り替え（みんなの投稿 / 自分の投稿） -->
+    <div class="card" style="margin-bottom: 20px;">
+      <div class="card-content" style="padding: 10px 15px;">
+        <div style="display: flex; gap: 10px;">
+          <%= link_to posts_path, class: "btn #{current_page?(posts_path) ? '' : 'btn-flat'}", style: "#{current_page?(posts_path) ? 'background: #33b5e5;' : 'color: #757575;'} text-transform: none; border-radius: 20px;" do %>
+            <i class="material-icons left">forum</i>みんなの投稿
+          <% end %>
+          <%= link_to my_posts_posts_path, class: "btn #{current_page?(my_posts_posts_path) ? '' : 'btn-flat'}", style: "#{current_page?(my_posts_posts_path) ? 'background: #33b5e5;' : 'color: #757575;'} text-transform: none; border-radius: 20px;" do %>
+            <i class="material-icons left">person</i>自分の投稿
+          <% end %>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 投稿フォームカード（みんなの投稿ページでのみ表示） -->
+    <% unless current_page?(my_posts_posts_path) %>
+      <div class="card post-form-card">
+        <div class="post-form-content">
+          <%= form_with model: @post, url: posts_path, local: true, html: { multipart: true } do |form| %>
+            <%= form.text_area :content, 
+                              placeholder: "稽古の様子や、質問など、自由に投稿してください", 
+                              class: "post-textarea",
+                              rows: "4" %>
+            
+            <!-- プレビューエリア -->
+            <div id="media-preview" style="display: none; margin-bottom: 15px;"></div>
+            
+            <div class="post-form-footer">
+              <label class="post-media-btn">
+                <i class="material-icons">photo_camera</i>
+                <span>画像・動画を追加</span>
+                <%= form.file_field :media_file, 
+                    accept: "image/*,video/*",
+                    class: "post-file-input",
+                    id: "post_media_file" %> 
+              </label>
+              
+              <%= form.submit "投稿する", class: "post-submit-btn" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+    
+    <!-- 投稿一覧 -->
+    <% if @posts.any? %>
+      <% @posts.each do |post| %>
+        <div class="card post-card">
+          <div class="card-content">
+            
+            <!-- 投稿ヘッダー -->
+            <div class="post-header">
+              <div class="post-user-info">
+                <div class="post-user-badge">
+                  <i class="material-icons">person</i>
+                  <span title="<%= post.user.profile.name %>"><%= post.user.profile.name.truncate(15) %></span>
+                </div>
+                <div class="post-meta">
+                  <span class="post-timestamp">
+                    <i class="material-icons">schedule</i>
+                    <%= time_ago_in_words(post.created_at) %>前
+                  </span>
+                </div>
+              </div>
+              
+              <% if post.user == current_user %>
+                <div class="post-actions-menu" style="position: relative;">
+                  <!-- メニューボタン（…） -->
+                  <a href="javascript:void(0);" 
+                     class="post-menu-btn" 
+                     onclick="togglePostMenu(<%= post.id %>); return false;">
+                    <i class="material-icons">more_vert</i>
+                  </a>
+                  
+                  <!-- ドロップダウンメニュー -->
+                  <div id="post-menu-<%= post.id %>" class="post-menu-dropdown" style="display: none;">
+                    <a href="#!" 
+                       class="post-delete-link delete-post-btn" 
+                       data-post-id="<%= post.id %>"
+                       data-post-content="<%= post.content.truncate(30) %>">
+                      <i class="material-icons">delete</i>削除
+                    </a>
+                  </div>
+                  
+                  <!-- 削除用の隠しフォーム -->
+                  <%= form_with model: post, 
+                                url: post_path(post), 
+                                method: :delete, 
+                                id: "delete-post-form-#{post.id}",
+                                class: "post-delete-form",
+                                style: "display: none;" do |f| %>
+                  <% end %>
+                </div>
+              <% end %>
+            </div>
+            
+            <!-- 投稿内容 -->
+            <div class="post-content-text">
+              <%= simple_format(h(post.content), {}, sanitize: false) %>
+            </div>
+      
+            <!-- メディア（画像・動画） -->
+            <% if post.media_file.attached? %> 
+              <div class="post-media-container">
+                <div class="post-media-item">
+                  <% if post.media_file.content_type.start_with?('image/') %> 
+                    <%= image_tag url_for(post.media_file), class: "post-media-image", alt: "投稿画像" %> 
+                  <% elsif post.media_file.content_type.start_with?('video/') %> 
+                    <%= video_tag url_for(post.media_file), controls: true, class: "post-media-video" %> 
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+            
+            <!-- いいね・コメントボタン -->
+            <div class="post-footer">
+              <div class="post-stats">
+                <div class="post-stat-item post-stat-likes">
+                  <i class="material-icons">favorite</i>
+                  <span><%= post.likes_count %></span>
+                </div>
+                <div class="post-stat-item post-stat-comments">
+                  <i class="material-icons">comment</i>
+                  <span><%= post.comments_count %>コメント</span>
+                </div>
+              </div>
+              
+              <div class="post-action-buttons">
+                <% if post.liked_by?(current_user) %>
+                  <%= link_to unlike_post_path(post), 
+                              data: { turbo_method: :delete },
+                              remote: true,
+                              class: "post-action-btn liked",
+                              id: "like-btn-#{post.id}" do %>
+                    <i class="material-icons">favorite</i>
+                    <span>いいね</span>
+                  <% end %>
+                <% else %>
+                  <%= link_to like_post_path(post), 
+                              data: { turbo_method: :post },
+                              remote: true,
+                              class: "post-action-btn",
+                              id: "like-btn-#{post.id}" do %>
+                    <i class="material-icons">favorite_border</i>
+                    <span>いいね</span>
+                  <% end %>
+                <% end %>
+                
+                <a href="javascript:void(0);" 
+                   class="post-action-btn" 
+                   onclick="toggleComments(<%= post.id %>); return false;">
+                  <i class="material-icons">comment</i>
+                  <span>コメント</span>
+                </a>
+              </div>
+              
+              <!-- コメントセクション -->
+              <div class="comments-section" id="comments-section-<%= post.id %>" style="display: none;">
+                <div class="comments-header">
+                  <i class="material-icons">chat_bubble</i>
+                  <span>コメント</span>
+                </div>
+                
+                <div id="comments-list-<%= post.id %>">
+                  <% comments = post.recent_comments(10) %>
+                  <% if comments.any? %>
+                    <% comments.each do |comment| %>
+                      <div class="comment-item" id="comment-<%= comment.id %>">
+                        <div class="comment-header">
+                          <span class="comment-user"><%= comment.user.profile.name %></span>
+                          <div style="display: flex; align-items: center; gap: 10px;">
+                            <span class="comment-time"><%= time_ago_in_words(comment.created_at) %>前</span>
+                            <% if comment.user == current_user %>
+                              <%= link_to post_comment_path(post, comment), 
+                                          data: { turbo_method: :delete, turbo_confirm: 'コメントを削除しますか？' },
+                                          remote: true,
+                                          class: "comment-delete-btn" do %>
+                                <i class="material-icons">delete</i>
+                              <% end %>
+                            <% end %>
+                          </div>
+                        </div>
+                        <div class="comment-text">
+                          <%= simple_format(h(comment.content), {}, sanitize: false) %>
+                        </div>
+                      </div>
+                    <% end %>
+                    
+                    <% if post.comments_count > 10 %>
+                      <p class="comments-more-info">
+                        <i class="material-icons tiny">info</i>
+                        最新10件のコメントを表示しています（全<%= post.comments_count %>件）
+                      </p>
+                    <% end %>
+                  <% else %>
+                    <div class="comments-empty">
+                      まだコメントがありません。最初のコメントを投稿しましょう！
+                    </div>
+                  <% end %>
+                </div>
+                
+                <!-- コメント入力フォーム -->
+                <%= form_with model: [post, Comment.new], 
+                              url: post_comments_path(post),
+                              local: false,
+                              html: { class: "comment-form", id: "comment-form-#{post.id}" } do |f| %>
+                  <%= f.text_area :content, 
+                                  placeholder: "コメントを入力...", 
+                                  class: "comment-input",
+                                  rows: "2" %>
+                  <%= f.submit "送信", class: "comment-submit-btn" %>
+                <% end %>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+      <% end %>
+      
+      <!-- ページネーション -->
+      <div class="pagination-wrapper">
+          <%= paginate @posts, 
+            window: 1,
+            outer_window: 0,
+            previous_label: '‹',
+            next_label: '›',
+            first_label: '«',
+            last_label: '»' %>
+      </div>
+      
+    <% else %>
+      <div class="card">
+        <div class="card-content center-align">
+          <i class="material-icons large" style="color: #bdbdbd;">forum</i>
+          <p style="color: #9e9e9e; margin-top: 20px;">
+            <% if current_page?(my_posts_posts_path) %>
+              まだ投稿がありません
+            <% else %>
+              まだ投稿がありません
+            <% end %>
+          </p>
+          <p style="color: #9e9e9e;">最初の投稿をしてみましょう！</p>
+        </div>
+      </div>
+    <% end %>
+    
+    <!-- 投稿削除確認モーダル -->
+    <div id="modal-delete-post-confirm" class="modal">
+      <div class="modal-content" style="padding: 35px 30px 25px 30px;">
+        <div class="delete-confirm-icon-wrapper">
+          <div class="delete-confirm-icon-circle">
+            <i class="material-icons delete-confirm-icon">delete_outline</i>
+          </div>
+        </div>
+        <h4 class="delete-confirm-title">
+          投稿を削除しますか？
+        </h4>
+        <p class="delete-confirm-message">
+          「<span id="delete-post-content" class="delete-confirm-todo-name"></span>」を削除します。<br>
+          <span class="delete-confirm-warning">この操作は取り消せません。</span>
+        </p>
+      </div>
+      <div class="modal-footer delete-modal-footer">
+        <a href="#!" class="modal-close waves-effect btn-flat delete-cancel-btn">
+          キャンセル
+        </a>
+        <a href="#!" id="confirm-delete-post-btn" class="waves-effect btn delete-confirm-btn">
+          <i class="material-icons left delete-confirm-btn-icon">delete</i>削除する
+        </a>
+      </div>
+    </div>
+    
+  </div>
+</div>
+
+<script>
+// コメントをトグル
+function toggleComments(postId) {
+  var commentsSection = document.getElementById('comments-section-' + postId);
+  if (commentsSection) {
+    if (commentsSection.style.display === 'none' || commentsSection.style.display === '') {
+      commentsSection.style.display = 'block';
+    } else {
+      commentsSection.style.display = 'none';
+    }
+  }
+  return false;
+}
+
+// 投稿メニューをトグル
+function togglePostMenu(postId) {
+  var menu = document.getElementById('post-menu-' + postId);
+  var allMenus = document.querySelectorAll('.post-menu-dropdown');
+  
+  allMenus.forEach(function(m) {
+    if (m.id !== 'post-menu-' + postId) {
+      m.style.display = 'none';
+    }
+  });
+  
+  if (menu) {
+    if (menu.style.display === 'none' || menu.style.display === '') {
+      menu.style.display = 'block';
+    } else {
+      menu.style.display = 'none';
+    }
+  }
+  
+  return false;
+}
+
+// プレビュー削除機能
+function removePreview() {
+  var previewArea = document.getElementById('media-preview');
+  var fileInput = document.getElementById('post_media_file');
+  
+  if (previewArea) {
+    previewArea.innerHTML = '';
+    previewArea.style.display = 'none';
+  }
+  
+  if (fileInput) {
+    fileInput.value = '';
+  }
+  
+  M.toast({html: 'ファイルを削除しました', classes: 'rounded'});
+}
+
+// ファイルプレビュー処理（重複防止のため関数化）
+function handleFilePreview(file) {
+  var previewArea = document.getElementById('media-preview');
+  if (!previewArea) return;
+  
+  previewArea.innerHTML = '';
+  previewArea.style.display = 'block';
+  
+  var reader = new FileReader();
+  
+  reader.onload = function(event) {
+    var previewContainer = document.createElement('div');
+    previewContainer.style.cssText = 'position: relative; max-width: 500px; margin: 0 auto 15px auto;';
+    
+    var previewItem = document.createElement('div');
+    previewItem.style.cssText = 'position: relative; border-radius: 8px; overflow: hidden; background: #f5f5f5;';
+    
+    if (file.type.startsWith('image/')) {
+      var img = document.createElement('img');
+      img.src = event.target.result;
+      img.style.cssText = 'width: 100%; height: auto; max-height: 400px; object-fit: contain; display: block;';
+      previewItem.appendChild(img);
+    } else if (file.type.startsWith('video/')) {
+      var video = document.createElement('video');
+      video.src = event.target.result;
+      video.controls = true;
+      video.style.cssText = 'width: 100%; height: auto; max-height: 400px; object-fit: contain; display: block; background: #000;';
+      previewItem.appendChild(video);
+    }
+    
+    var fileInfo = document.createElement('div');
+    fileInfo.style.cssText = 'padding: 8px 12px; background: rgba(0, 0, 0, 0.05); font-size: 0.9rem; color: #666; display: flex; justify-content: space-between; align-items: center;';
+    
+    var fileName = document.createElement('span');
+    fileName.textContent = file.name;
+    fileName.style.cssText = 'overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1;';
+    
+    var removeBtn = document.createElement('button');
+    removeBtn.type = 'button';
+    removeBtn.innerHTML = '<i class="material-icons" style="font-size: 18px;">close</i>';
+    removeBtn.style.cssText = 'background: #f44336; color: white; border: none; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; margin-left: 10px;';
+    removeBtn.onclick = removePreview;
+    
+    fileInfo.appendChild(fileName);
+    fileInfo.appendChild(removeBtn);
+    previewItem.appendChild(fileInfo);
+    previewContainer.appendChild(previewItem);
+    previewArea.appendChild(previewContainer);
+  };
+  
+  reader.readAsDataURL(file);
+}
+
+// ページ初期化処理
+function initializePage() {
+  // モーダルの初期化
+  var modals = document.querySelectorAll('.modal');
+  M.Modal.init(modals);
+  
+  // メニュー外クリックで閉じる
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.post-actions-menu')) {
+      var allMenus = document.querySelectorAll('.post-menu-dropdown');
+      allMenus.forEach(function(menu) {
+        menu.style.display = 'none';
+      });
+    }
+  });
+  
+  // ファイル選択のイベントリスナー（既存のリスナーを削除してから追加）
+  var fileInput = document.getElementById('post_media_file');
+  if (fileInput) {
+    // 既存のイベントリスナーをクリア
+    var newFileInput = fileInput.cloneNode(true);
+    fileInput.parentNode.replaceChild(newFileInput, fileInput);
+    
+    // 新しいイベントリスナーを追加
+    newFileInput.addEventListener('change', function(e) {
+      var file = e.target.files[0];
+      if (file) {
+        M.toast({html: 'ファイルを選択しました', classes: 'rounded'});
+        handleFilePreview(file);
+      }
+    });
+  }
+  
+  // 削除モーダルの処理
+  var deletePostModal = document.getElementById('modal-delete-post-confirm');
+  if (deletePostModal) {
+    var deletePostModalInstance = M.Modal.getInstance(deletePostModal);
+    var currentPostId = null;
+    
+    document.querySelectorAll('.delete-post-btn').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        currentPostId = this.getAttribute('data-post-id');
+        var postContent = this.getAttribute('data-post-content');
+        
+        document.getElementById('delete-post-content').textContent = postContent;
+        
+        var allMenus = document.querySelectorAll('.post-menu-dropdown');
+        allMenus.forEach(function(menu) {
+          menu.style.display = 'none';
+        });
+        
+        deletePostModalInstance.open();
+      });
+    });
+    
+    var confirmDeleteBtn = document.getElementById('confirm-delete-post-btn');
+    if (confirmDeleteBtn) {
+      confirmDeleteBtn.onclick = function() {
+        if (currentPostId) {
+          var form = document.getElementById('delete-post-form-' + currentPostId);
+          if (form) {
+            form.submit();
+          }
+        }
+      };
+    }
+  }
+}
+
+// 初回ロード
+document.addEventListener('DOMContentLoaded', initializePage);
+
+// Turboロード
+document.addEventListener('turbo:load', initializePage);
+</script>

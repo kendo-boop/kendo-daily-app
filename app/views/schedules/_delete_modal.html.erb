@@ -1,0 +1,25 @@
+<!-- _delete_modal.html.erb -->
+<div id="modal-delete-confirm" class="modal">
+  <div class="modal-content" style="padding: 35px 30px 25px 30px;">
+    <div class="delete-confirm-icon-wrapper">
+      <div class="delete-confirm-icon-circle">
+        <i class="material-icons delete-confirm-icon">delete_outline</i>
+      </div>
+    </div>
+    <h4 class="delete-confirm-title">
+      スケジュールを削除しますか？
+    </h4>
+    <p class="delete-confirm-message">
+      「<span id="delete-schedule-title" class="delete-confirm-todo-name"></span>」を削除します。<br>
+      <span class="delete-confirm-warning">この操作は取り消せません。</span>
+    </p>
+  </div>
+  <div class="modal-footer delete-modal-footer">
+    <a href="#!" class="modal-close waves-effect btn-flat delete-cancel-btn" id="cancel-delete-btn">
+      キャンセル
+    </a>
+    <a href="#!" id="confirm-delete-schedule-btn" class="waves-effect btn delete-confirm-btn">
+      <i class="material-icons left delete-confirm-btn-icon">delete</i>削除する
+    </a>
+  </div>
+</div>

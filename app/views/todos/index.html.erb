@@ -1,0 +1,244 @@
+<div class="row">
+  <div class="col s12">
+    <div class="card">
+      <div class="card-content">
+        <span class="card-title">TODOリスト</span>
+        
+        <!-- TODOを追加リンク -->
+        <div style="margin: 16px 0 20px 0; text-align: right;">
+          <a href="#modal-add-todo" class="modal-trigger" style="color: #33b5e5; text-decoration: none; font-weight: 400; display: inline-flex; align-items: center;">
+            <i class="material-icons" style="font-size: 20px; margin-right: 4px;">add</i>TODOを追加
+          </a>
+        </div>
+        
+        <!-- TODOリスト表示 -->
+        <% if @todos.any? %>
+          <ul class="collection todos-collection">
+            <% @todos.each do |todo| %>
+              <li class="collection-item">
+                <div class="todo-item-container">
+                  
+                  <div class="todo-content-wrapper">
+                    <!-- チェックボックス -->
+                    <%= form_with model: todo, url: todo_path(todo), method: :patch, local: true, class: "todo-checkbox-form" do |f| %>
+                      <%= f.hidden_field :completed, value: !todo.completed %>
+                      <%= f.check_box :completed_display, 
+                                      checked: todo.completed,
+                                      onchange: "this.form.submit();",
+                                      class: "todo-checkbox" %>
+                    <% end %>
+                    
+                    <!-- TODO内容 -->
+                    <div class="todo-content">
+                      <div class="todo-title <%= 'completed' if todo.completed %>">
+                        <%= todo.title %>
+                      </div>
+                      
+                      <div class="todo-meta">
+                        <% if todo.category.present? %>
+                          <span class="chip todo-category-chip">
+                            <%= todo.category %>
+                          </span>
+                        <% end %>
+                        
+                        <% if todo.due_date.present? %>
+                          <span>
+                            <i class="material-icons tiny todo-due-date-icon">event</i>
+                            <%= todo.due_date.strftime("%Y/%m/%d") %>
+                            <% if todo.due_date < Date.today && !todo.completed %>
+                              <span class="todo-overdue">期限切れ</span>
+                            <% end %>
+                          </span>
+                        <% end %>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- 削除ボタン -->
+                  <a href="#!" 
+                     class="delete-todo-btn todo-delete-btn" 
+                     data-todo-id="<%= todo.id %>"
+                     data-todo-title="<%= todo.title %>">
+                    <i class="material-icons todo-delete-icon">delete</i>
+                  </a>
+                  
+                  <!-- 削除用の隠しフォーム -->
+                  <%= form_with model: todo, 
+                                url: todo_path(todo), 
+                                method: :delete, 
+                                id: "delete-form-#{todo.id}",
+                                class: "todo-delete-form" do |f| %>
+                  <% end %>
+                </div>
+              </li>
+            <% end %>
+          </ul>
+        <% else %>
+          <p class="todos-empty-message">
+            TODOがありません
+          </p>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 追加モーダル -->
+<div id="modal-add-todo" class="modal" style="max-width: 600px;">
+  <div class="modal-content">
+    <h4 style="font-size: 20px; font-weight: 400; color: #424242; margin-bottom: 20px;">TODOを追加</h4>
+    
+    <%= form_with model: @todo, url: todos_path, local: true do |form| %>
+      <div class="input-field">
+        <%= form.text_field :title, id: "todo_title", placeholder: "例: 面打ちの練習 (50本)", required: true %>
+        <%= form.label :title, "TODO" %>
+      </div>
+      
+      <div class="row" style="margin-bottom: 10px;">
+        <div class="col s12 m6">
+          <label style="font-size: 14px; color: #9e9e9e;">カテゴリ</label>
+          <%= form.select :category, 
+                          options_for_select(Todo::CATEGORIES),
+                          { include_blank: "選択してください" },
+                          { class: "browser-default", style: "display: block; height: 42px; padding: 8px; border: 1px solid #9e9e9e; border-radius: 4px; margin-top: 8px;" } %>
+        </div>
+        
+        <div class="col s12 m6">
+          <label style="font-size: 14px; color: #9e9e9e;">期限</label>
+          <input type="date" 
+                 name="todo[due_date]" 
+                 id="todo_due_date"
+                 class="browser-default" 
+                 style="display: block; height: 42px; padding: 8px; border: 1px solid #9e9e9e; border-radius: 4px; margin-top: 8px;">
+        </div>
+      </div>
+      
+      <div style="margin-top: 20px;">
+        <%= form.submit "追加", class: "btn", style: "background: #33b5e5; width: 100%; height: 42px; line-height: 42px; padding: 0;" %>
+      </div>
+    <% end %>
+  </div>
+  <div class="modal-footer">
+    <a href="#!" class="modal-close waves-effect btn-flat" style="color: #9e9e9e;">キャンセル</a>
+  </div>
+</div>
+
+<!-- 削除確認モーダル -->
+<div id="modal-delete-confirm" class="modal">
+  <div class="modal-content" style="padding: 35px 30px 25px 30px;">
+    <div class="delete-confirm-icon-wrapper">
+      <div class="delete-confirm-icon-circle">
+        <i class="material-icons delete-confirm-icon">delete_outline</i>
+      </div>
+    </div>
+    <h4 class="delete-confirm-title">
+      TODOを削除しますか?
+    </h4>
+    <p class="delete-confirm-message">
+      「<span id="delete-todo-title" class="delete-confirm-todo-name"></span>」を削除します。<br>
+      <span class="delete-confirm-warning">この操作は取り消せません。</span>
+    </p>
+  </div>
+  <div class="modal-footer delete-modal-footer">
+    <a href="#!" class="modal-close waves-effect btn-flat delete-cancel-btn">
+      キャンセル
+    </a>
+    <a href="#!" id="confirm-delete-btn" class="waves-effect btn delete-confirm-btn">
+      <i class="material-icons left delete-confirm-btn-icon">delete</i>削除する
+    </a>
+  </div>
+</div>
+
+<script>
+  // 初期化関数を定義
+  function initializeTodoModals() {
+    // モーダルの初期化
+    var elems = document.querySelectorAll('.modal');
+    M.Modal.init(elems);
+    
+    // テキストフィールドの初期化
+    M.updateTextFields();
+    
+    // 日付フィールドを空にする
+    var dateField = document.getElementById('todo_due_date');
+    if (dateField) {
+      dateField.value = '';
+    }
+    
+    // 削除確認モーダルの処理
+    var deleteModal = document.getElementById('modal-delete-confirm');
+    if (!deleteModal) return; // モーダルが存在しない場合は終了
+    
+    var deleteModalInstance = M.Modal.getInstance(deleteModal);
+    var currentTodoId = null;
+    
+    // 既存のイベントリスナーを削除するため、クローンで置き換え
+    var confirmDeleteBtn = document.getElementById('confirm-delete-btn');
+    if (confirmDeleteBtn) {
+      var newConfirmBtn = confirmDeleteBtn.cloneNode(true);
+      confirmDeleteBtn.parentNode.replaceChild(newConfirmBtn, confirmDeleteBtn);
+      
+      // 削除確定ボタンをクリックしたとき
+      newConfirmBtn.addEventListener('click', function() {
+        if (currentTodoId) {
+          document.getElementById('delete-form-' + currentTodoId).submit();
+        }
+      });
+    }
+    
+    // 削除ボタンをクリックしたとき
+    document.querySelectorAll('.delete-todo-btn').forEach(function(btn) {
+      // 既存のリスナーを削除
+      var newBtn = btn.cloneNode(true);
+      btn.parentNode.replaceChild(newBtn, btn);
+      
+      newBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        currentTodoId = this.getAttribute('data-todo-id');
+        var todoTitle = this.getAttribute('data-todo-title');
+        
+        // モーダルにタイトルを表示
+        var titleElement = document.getElementById('delete-todo-title');
+        if (titleElement) {
+          titleElement.textContent = todoTitle;
+        }
+        
+        // モーダルを開く
+        if (deleteModalInstance) {
+          deleteModalInstance.open();
+        }
+      });
+    });
+    
+    // 追加モーダルを開いたときに日付をクリア
+    var addModalElem = document.getElementById('modal-add-todo');
+    if (addModalElem) {
+      var addModalInstance = M.Modal.getInstance(addModalElem);
+      if (addModalInstance) {
+        // 既存のイベントを削除してから追加
+        addModalElem.removeEventListener('opened', handleModalOpened);
+        addModalElem.addEventListener('opened', handleModalOpened);
+      }
+    }
+  }
+  
+  // モーダルオープン時のハンドラ
+  function handleModalOpened() {
+    var dateField = document.getElementById('todo_due_date');
+    if (dateField) {
+      dateField.value = '';
+    }
+  }
+  
+  // 初期化実行
+  // DOMContentLoaded
+  document.addEventListener('DOMContentLoaded', initializeTodoModals);
+  
+  // Turbolinks対応（使用している場合）
+  document.addEventListener('turbolinks:load', initializeTodoModals);
+  
+  // Turbo対応（Rails 7以降）
+  document.addEventListener('turbo:load', initializeTodoModals);
+</script>

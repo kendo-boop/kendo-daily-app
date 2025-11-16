@@ -1,0 +1,57 @@
+// コメント追加後の処理
+var commentsList = document.getElementById('comments-list-<%= @post.id %>');
+var emptyMessage = commentsList.querySelector('.comments-empty');
+
+// 空のメッセージがあれば削除
+if (emptyMessage) {
+  emptyMessage.remove();
+}
+
+// 新しいコメントを追加
+var newComment = '<div class="comment-item" id="comment-<%= @comment.id %>">' +
+  '<div class="comment-header">' +
+    '<span class="comment-user"><%= @comment.user.profile.name %></span>' +
+    '<div style="display: flex; align-items: center; gap: 10px;">' +
+      '<span class="comment-time">たった今</span>' +
+      '<%= j(link_to post_comment_path(@post, @comment), 
+                    data: { turbo_method: :delete, turbo_confirm: "コメントを削除しますか？" },
+                    remote: true,
+                    class: "comment-delete-btn" do
+        content_tag(:i, "delete", class: "material-icons")
+      end) %>' +
+    '</div>' +
+  '</div>' +
+  '<div class="comment-text"><%= j(simple_format(h(@comment.content), {}, sanitize: false)) %></div>' +
+'</div>';
+
+// 10件を超える場合は最初のコメントを削除
+var comments = commentsList.querySelectorAll('.comment-item');
+if (comments.length >= 10) {
+  comments[0].remove();
+}
+
+// 新しいコメントを末尾に追加
+var moreInfo = commentsList.querySelector('.comments-more-info');
+if (moreInfo) {
+  commentsList.insertBefore(
+    document.createRange().createContextualFragment(newComment),
+    moreInfo
+  );
+} else {
+  commentsList.insertAdjacentHTML('beforeend', newComment);
+}
+
+// フォームをリセット
+var form = document.getElementById('comment-form-<%= @post.id %>');
+if (form) {
+  form.reset();
+}
+
+// コメント数を更新
+var commentCount = document.querySelector('#like-btn-<%= @post.id %>').closest('.post-footer').querySelector('.post-stat-comments span');
+if (commentCount) {
+  commentCount.textContent = '<%= @post.comments_count %>コメント';
+}
+
+// 成功メッセージ
+M.toast({html: 'コメントを投稿しました', classes: 'rounded'});

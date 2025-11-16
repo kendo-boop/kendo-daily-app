@@ -1,0 +1,27 @@
+// コメント削除後の処理
+var comment = document.getElementById('comment-<%= @comment.id %>');
+if (comment) {
+  comment.style.transition = 'opacity 0.3s';
+  comment.style.opacity = '0';
+  
+  setTimeout(function() {
+    comment.remove();
+    
+    // コメントが0件になったら空のメッセージを表示
+    var commentsList = document.getElementById('comments-list-<%= @post.id %>');
+    var remainingComments = commentsList.querySelectorAll('.comment-item');
+    
+    if (remainingComments.length === 0) {
+      commentsList.innerHTML = '<div class="comments-empty">まだコメントがありません。最初のコメントを投稿しましょう！</div>';
+    }
+  }, 300);
+}
+
+// コメント数を更新
+var commentCount = document.querySelector('#like-btn-<%= @post.id %>').closest('.post-footer').querySelector('.post-stat-comments span');
+if (commentCount) {
+  commentCount.textContent = '<%= @post.comments_count %>コメント';
+}
+
+// 成功メッセージ
+M.toast({html: 'コメントを削除しました', classes: 'rounded'});

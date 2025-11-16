@@ -1,0 +1,62 @@
+<div class="devise-page">
+  <div class="pen-title">
+    <h1>KendoLife</h1>
+  </div>
+
+  <div class="form-module">
+    <div class="toggle">
+      <i class="fa fa-times fa-pencil"></i>
+      <div class="tooltip">Click Me</div>
+    </div>
+    
+    <!-- ログインフォーム -->
+    <div class="form">
+      <h2>Login to your account</h2>
+      <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+        <%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: "メールアドレス" %>
+        <%= f.password_field :password, autocomplete: "current-password", placeholder: "パスワード" %>
+        <%= f.submit "Login" %>
+      <% end %>
+    </div>
+    
+    <!-- 新規登録フォーム -->
+    <div class="form">
+      <h2>Create an account</h2>
+      <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+        <%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: "Email Address" %>
+        <%= f.password_field :password, autocomplete: "new-password", placeholder: "Password" %>
+        <%= f.password_field :password_confirmation, autocomplete: "new-password", placeholder: "Password Confirmation" %>
+        <%= f.submit "Register" %>
+      <% end %>
+    </div>
+    
+    <div class="cta">
+      <%= link_to "Forgot your password?", new_password_path(resource_name) %>
+    </div>
+  </div>
+</div>
+
+<!-- jQuery読み込み -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<!-- アニメーション用JavaScript -->
+<script>
+$(document).ready(function(){
+  console.log('JavaScriptが読み込まれました');
+  
+  $('.toggle').on('click', function(){
+    console.log('ボタンがクリックされました');
+    
+    // Switches the Icon
+    $(this).children('i').toggleClass('fa-pencil');
+    
+    // Switches the forms  
+    $('.form').animate({
+      height: "toggle",
+      'padding-top': 'toggle',
+      'padding-bottom': 'toggle',
+      opacity: "toggle"
+    }, "slow");
+  });
+});
+</script>

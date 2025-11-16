@@ -1,0 +1,237 @@
+<!-- ナビゲーションバー -->
+<nav style="background: #ffffff; box-shadow: 0 2px 4px rgba(0,0,0,0.08); border-bottom: 1px solid #e0e0e0;">
+  <div class="nav-wrapper container">
+    <a href="<%= root_path %>" class="brand-logo" style="color: #33b5e5 !important; font-weight: 400;">KendoLife</a>
+    <ul class="right">
+      <li class="user-name-li"><a href="#!" style="color: #616161 !important;"><i class="material-icons left">person</i><%= current_user.profile.name %></a></li>
+      <li><%= link_to destroy_user_session_path, data: { turbo_method: :delete }, style: "color: #616161 !important;" do %><i class="material-icons">exit_to_app</i><% end %></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- タブナビゲーション -->
+<div class="tabs-wrapper">
+  <ul class="tabs tabs-fixed-width" style="background: white; box-shadow: none; border-bottom: 1px solid #e0e0e0;">
+    <li class="tab">
+      <%= link_to schedules_path, class: "tab-link #{current_page?(schedules_path) ? 'active' : ''}", style: "color: #{current_page?(schedules_path) ? '#33b5e5' : '#9e9e9e'};" do %>
+        <i class="material-icons tab-icon">event</i>
+        <span class="tab-text">スケジュール</span>
+      <% end %>
+    </li>
+    <li class="tab">
+      <%= link_to todos_path, class: "tab-link #{current_page?(todos_path) ? 'active' : ''}", style: "color: #{current_page?(todos_path) ? '#33b5e5' : '#9e9e9e'};" do %>
+        <i class="material-icons tab-icon">check_box</i>
+        <span class="tab-text">TODO</span>
+      <% end %>
+    </li>
+    <li class="tab">
+      <%= link_to matches_path, class: "tab-link #{current_page?(matches_path) || current_page?(controller: 'matches') ? 'active' : ''}", style: "color: #{current_page?(matches_path) || current_page?(controller: 'matches') ? '#33b5e5' : '#9e9e9e'};" do %>
+        <i class="material-icons tab-icon">emoji_events</i>
+        <span class="tab-text">スコア</span>
+      <% end %>
+    </li>
+    <li class="tab">
+      <%= link_to posts_path, class: "tab-link #{current_page?(posts_path) || current_page?(my_posts_posts_path) ? 'active' : ''}", style: "color: #{current_page?(posts_path) || current_page?(my_posts_posts_path) ? '#33b5e5' : '#9e9e9e'};" do %>
+        <i class="material-icons tab-icon">forum</i>
+        <span class="tab-text">掲示板</span>
+      <% end %>
+    </li>
+    <li class="tab">
+      <%= link_to edit_profile_path, class: "tab-link #{current_page?(edit_profile_path) || current_page?(root_path) ? 'active' : ''}", style: "color: #{current_page?(edit_profile_path) || current_page?(root_path) ? '#33b5e5' : '#9e9e9e'};" do %>
+        <i class="material-icons tab-icon">account_circle</i>
+        <span class="tab-text">プロフィール</span>
+      <% end %>
+    </li>
+  </ul>
+</div>
+
+<style>
+  /* タブのインジケーター */
+  .tabs .indicator {
+    background-color: #33b5e5;
+    height: 2px;
+  }
+  
+  .tabs .tab a:hover {
+    color: #33b5e5 !important;
+    background: transparent;
+  }
+  
+  .tabs .tab a.active {
+    color: #33b5e5 !important;
+    background: transparent;
+  }
+
+  /* PC表示：横並び（デフォルト） */
+  .tab-link {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .tab-icon {
+    margin-right: 4px;
+    margin-left: 0 !important;
+    float: none !important;
+  }
+
+  .tab-text {
+    display: inline;
+  }
+
+  /* ナビゲーションバーのデフォルトスタイル */
+  .brand-logo {
+    font-size: 2.1rem !important;
+  }
+  
+  .nav-wrapper .right li a {
+    display: flex;
+    align-items: center;
+  }
+  
+  .nav-wrapper .right li a i {
+    margin: 0;
+  }
+
+  /* タブラッパーの余白調整 */
+  .tabs-wrapper {
+    margin-bottom: 0;
+  }
+  
+  .tabs-wrapper .tabs {
+    margin-bottom: 0;
+  }
+  
+  /* タブの下のコンテンツエリアの余白を削減 */
+  .tabs-wrapper + * {
+    margin-top: 20px;
+  }
+
+  /* 600px以下 */
+  @media only screen and (max-width: 600px) {
+    /* KendoLifeタイトルを縮小 */
+    .brand-logo {
+      font-size: 1.8rem !important;
+      padding-left: 10px !important;
+    }
+    
+    /* ユーザー名を非表示 */
+    .user-name-li {
+      display: none !important;
+    }
+    
+    /* ログアウトボタンは表示 */
+    .nav-wrapper .right li a i.material-icons {
+      font-size: 24px;
+    }
+    
+    /* タブ：縦並び */
+    .tab-link {
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 0 !important;
+    }
+
+    .tab-icon {
+      margin-right: 0 !important;
+      margin-left: 0 !important;
+      margin-bottom: 2px;
+      font-size: 20px !important;
+      float: none !important;
+    }
+
+    .tab-text {
+      font-size: 10px !important;
+      display: block !important;
+      line-height: 1.2;
+    }
+    
+    /* タブ下の余白を縮小 */
+    .tabs-wrapper + * {
+      margin-top: 15px;
+    }
+    
+    /* メインコンテナの上部余白を縮小 */
+    main .container {
+      margin-top: 20px !important;
+    }
+  }
+
+  /* 500px以下 */
+  @media only screen and (max-width: 500px) {
+    /* KendoLifeタイトルをさらに縮小 */
+    .brand-logo {
+      font-size: 1.6rem !important;
+      padding-left: 8px !important;
+    }
+    
+    /* ログアウトアイコンを少し縮小 */
+    .nav-wrapper .right li a i.material-icons {
+      font-size: 22px;
+    }
+    
+    /* タブアイコンとテキストをさらに縮小 */
+    .tab-icon {
+      font-size: 19px !important;
+    }
+
+    .tab-text {
+      font-size: 9px !important;
+    }
+    
+    /* タブ下の余白をさらに縮小 */
+    .tabs-wrapper + * {
+      margin-top: 12px;
+    }
+    
+    /* メインコンテナの上部余白をさらに縮小 */
+    main .container {
+      margin-top: 15px !important;
+    }
+    
+    /* タブリンクのパディングを縮小 */
+    .tab-link {
+      padding: 6px 0 !important;
+    }
+  }
+
+  /* 375px以下 */
+  @media only screen and (max-width: 375px) {
+    /* KendoLifeタイトルを最小サイズに */
+    .brand-logo {
+      font-size: 1.4rem !important;
+      padding-left: 5px !important;
+    }
+    
+    /* ログアウトアイコンを最小サイズに */
+    .nav-wrapper .right li a i.material-icons {
+      font-size: 20px;
+    }
+    
+    /* タブアイコンとテキストを最小サイズに */
+    .tab-icon {
+      font-size: 18px !important;
+    }
+
+    .tab-text {
+      font-size: 8px !important;
+    }
+    
+    /* タブ下の余白を最小に */
+    .tabs-wrapper + * {
+      margin-top: 10px;
+    }
+    
+    /* メインコンテナの上部余白を最小に */
+    main .container {
+      margin-top: 12px !important;
+    }
+    
+    /* タブリンクのパディングを最小に */
+    .tab-link {
+      padding: 5px 0 !important;
+    }
+  }
+</style>

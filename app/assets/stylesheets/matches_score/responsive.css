@@ -1,0 +1,709 @@
+/* ========================================
+   デスクトップ・モバイル表示切り替え
+   ======================================== */
+.desktop-only {
+  display: block;
+}
+
+.mobile-only {
+  display: none;
+}
+
+@media only screen and (max-width: 600px) {
+  .desktop-only {
+    display: none !important;
+  }
+  
+  .mobile-only {
+    display: block !important;
+  }
+
+  /* ========================================
+     スコアコンテナの調整
+     ======================================== */
+  .score-container {
+    padding: 0 12px 60px !important;
+  }
+
+  .score-table-wrapper {
+    padding: 12px !important;
+    margin-bottom: 80px;
+  }
+
+  /* ========================================
+     モバイル用スコア表(90度回転レイアウト)
+     ======================================== */
+  .mobile-score-table {
+    width: 100% !important;
+    min-width: 0 !important;
+    border-collapse: collapse;
+    border: 2px solid #000;
+    table-layout: fixed;
+    font-size: 12px;
+  }
+
+  .mobile-score-table th,
+  .mobile-score-table td {
+    border: 1.5px solid #000;
+    text-align: center;
+    vertical-align: middle;
+    padding: 0;
+  }
+
+  /* ========================================
+     ヘッダー行(チーム名が上部に横並び) - 縦幅を狭く
+     ======================================== */
+  .mobile-corner-cell {
+    width: 35px !important;
+    background: white;
+    padding: 0 !important;
+    height: 24px !important;
+    line-height: 24px !important;
+    vertical-align: middle !important;
+  }
+
+  .mobile-team-header {
+    background: white;
+    padding: 0 !important;
+    height: 24px !important;
+    line-height: 24px !important;
+    vertical-align: middle !important;
+  }
+
+  .mobile-team-input {
+    width: 100% !important;
+    border: none !important;
+    background: transparent !important;
+    text-align: center !important;
+    font-size: 10px !important;
+    font-weight: 600 !important;
+    padding: 5px 2px 0 2px !important;
+    height: 24px !important;
+    line-height: normal !important;
+    box-sizing: border-box !important;
+    vertical-align: middle !important;
+    display: block !important;
+  }
+
+  .mobile-team-input::placeholder {
+    font-size: 8px;
+    color: #bdbdbd;
+  }
+
+  .mobile-team-input:focus {
+    outline: none;
+    background: #e3f2fd;
+    border-radius: 4px;
+  }
+
+  /* ========================================
+     縦書きテキスト(役職名用)
+     ======================================== */
+  .vertical-text {
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    line-height: 1.2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+  }
+
+  /* ========================================
+     役職セル(左端の縦書き列)
+     ======================================== */
+  .mobile-position-cell {
+    width: 35px !important;
+    background: white;
+    padding: 0 !important;
+    height: 50px !important;
+    vertical-align: middle !important;
+  }
+
+  /* ========================================
+     選手名セル
+     ======================================== */
+  .mobile-player-name-cell {
+    width: 20% !important;
+    background: white;
+    padding: 0 !important;
+    height: 50px !important;
+    vertical-align: middle !important;
+  }
+
+  .mobile-player-name-cell input {
+    width: 100% !important;
+    border: none !important;
+    background: transparent !important;
+    text-align: center !important;
+    font-size: 11px !important;
+    font-weight: 500 !important;
+    padding: 6px 2px 0 2px !important;
+    height: 50px !important;
+    line-height: normal !important;
+    box-sizing: border-box !important;
+    vertical-align: middle !important;
+    display: block !important;
+  }
+
+  .mobile-player-name-cell input::placeholder {
+    font-size: 9px;
+    color: #bdbdbd;
+  }
+
+  .mobile-player-name-cell input:focus {
+    outline: none;
+    background: #e3f2fd;
+    border-radius: 4px;
+  }
+
+  /* ========================================
+     モバイル用反則マークの調整
+     ======================================== */
+  .mobile-points .hansoku-mark {
+    bottom: 5px;
+    gap: 2px;
+  }
+  
+  .mobile-points .hansoku-triangle {
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 8px solid #c62828;
+  }
+  
+  .mobile-points .hansoku-line {
+    height: 2px;
+    width: 20px;
+    top: 4px;
+    left: 0px;
+  }
+  
+  /* 2回目の反則線（1個目と2個目の中央に配置） - デフォルト位置のまま */
+  /* .mobile-points .hansoku-mark .hansoku-line:nth-child(5) は left: 0px */
+  
+  /* 4回目の反則線（3個目と4個目の中央に配置） - 2px左にずらす */
+  .mobile-points .hansoku-mark .hansoku-line:nth-child(6) {
+    left: 24px !important;
+  }
+  
+  .mobile-points .hansoku-mark-opponent {
+    top: 5px;
+  }
+
+  /* ========================================
+     技記録エリア(モバイル)
+     ======================================== */
+  .mobile-points {
+    min-height: 50px;
+    height: 50px;
+    padding: 4px !important;
+    cursor: pointer;
+    transition: background 0.2s;
+    position: relative;
+    width: 25% !important;
+  }
+
+  .mobile-points:hover {
+    background: #f5f5f5;
+  }
+
+  .mobile-points.active {
+    background: #e3f2fd;
+    outline: 2px solid #33b5e5;
+    outline-offset: -2px;
+  }
+
+  /* ========================================
+     合計スコア(モバイル・最下部に配置) - 縦幅を狭く
+     ======================================== */
+  .mobile-score {
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    padding: 0 !important;
+    background: white !important;
+    height: 32px !important;
+    line-height: 32px !important;
+    vertical-align: middle !important;
+  }
+
+  .mobile-score > div {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: 100% !important;
+  }
+
+  .mobile-score .score-fraction {
+    transform: none;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .mobile-score .score-numerator,
+  .mobile-score .score-denominator {
+    font-size: 12px !important;
+    line-height: 1 !important;
+  }
+
+  .mobile-score .score-line {
+    width: 20px !important;
+    height: 1.5px !important;
+    margin: 1px 0 !important;
+  }
+
+  .mobile-score .score-winner::before {
+    width: 32px !important;
+    height: 32px !important;
+    border-width: 2px !important;
+  }
+
+  .mobile-score .score-loser::before {
+    border-left: 16px solid transparent !important;
+    border-right: 16px solid transparent !important;
+    border-bottom: 28px solid #e53935 !important;
+  }
+
+  .mobile-score .score-loser::after {
+    border-left: 13px solid transparent !important;
+    border-right: 13px solid transparent !important;
+    border-bottom: 24px solid white !important;
+  }
+
+  /* ========================================
+      ヘッダーのレスポンシブ - 超コンパクト化
+     ======================================== */
+  .score-header {
+    padding: 6px 20px !important;
+    flex-direction: row !important;
+    gap: 8px !important;
+    margin-bottom: 6px !important;
+    align-items: center !important;
+    min-height: auto !important;
+    flex-wrap: nowrap !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .header-left {
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 3px !important;
+    min-width: 0 !important;
+  }
+
+  .back-btn {
+    padding: 3px 5px !important;
+    font-size: 10px !important;
+    flex-shrink: 0 !important;
+    line-height: 1 !important;
+  }
+
+  .back-btn .material-icons {
+    font-size: 12px !important;
+  }
+
+  .match-info {
+    width: 100%;
+    gap: 2px !important;
+    min-width: 0 !important;
+  }
+
+  .match-title-edit {
+    width: 66% !important;
+    font-size: 11px !important;
+    padding: 2px 3px !important;
+    height: 20px !important;
+    line-height: 1.2 !important;
+    border-bottom: 1px solid #e0e0e0 !important;
+  }
+
+  .match-title-edit:hover {
+    background: transparent !important;
+    border-bottom-color: #bdbdbd !important;
+  }
+
+  .match-title-edit:focus {
+    outline: none !important;
+    background: transparent !important;
+    border-bottom-color: #33b5e5 !important;
+  }
+
+  .match-meta {
+    gap: 3px !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  .match-type-badge {
+    padding: 1px 4px !important;
+    font-size: 8px !important;
+    line-height: 1.2 !important;
+  }
+
+  .match-date-edit {
+    font-size: 9px !important;
+    padding: 1px 3px !important;
+    height: 18px !important;
+    line-height: 1.2 !important;
+    border-bottom: 1px solid #e0e0e0 !important;
+    width: auto !important;
+  }
+
+  .match-date-edit:hover {
+    background: transparent !important;
+    border-bottom-color: #bdbdbd !important;
+  }
+
+  .match-date-edit:focus {
+    outline: none !important;
+    background: transparent !important;
+    border-bottom-color: #33b5e5 !important;
+  }
+
+  /* ボタンを小さく縦並びに */
+  .header-actions {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 3px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .header-actions .btn {
+    font-size: 9px !important;
+    padding: 4px 6px !important;
+    white-space: nowrap !important;
+    line-height: 1 !important;
+    min-width: 50px !important;
+  }
+
+  .header-actions .btn .material-icons {
+    font-size: 11px !important;
+  }
+
+  /* ========================================
+      代表戦ボタンの調整
+     ======================================== */
+  div[style*="text-align: right"] {
+    margin-bottom: 4px !important;
+    padding: 0 10px !important;
+  }
+
+  #toggleDaihyosenBtn {
+    font-size: 10px !important;
+    padding: 4px 8px !important;
+  }
+
+  #toggleDaihyosenBtn .material-icons {
+    font-size: 13px !important;
+  }
+
+  /* ========================================
+      技入力パネル(モバイル)
+     ======================================== */
+  .tech-panel {
+    max-width: 95% !important;
+    padding: 14px !important;
+    bottom: 8px !important;
+  }
+
+  .tech-panel-title {
+    font-size: 12px !important;
+    margin-bottom: 10px !important;
+  }
+
+  .tech-buttons {
+    gap: 6px !important;
+  }
+
+  .tech-btn {
+    padding: 10px !important;
+    font-size: 14px !important;
+  }
+
+  .hansoku-btn {
+    padding: 8px 16px !important;
+    font-size: 13px !important;
+  }
+
+  .special-buttons {
+    gap: 6px !important;
+  }
+
+  .special-btn {
+    padding: 8px !important;
+    font-size: 11px !important;
+  }
+
+  .panel-actions {
+    gap: 6px !important;
+  }
+
+  .panel-actions button {
+    padding: 8px !important;
+    font-size: 11px !important;
+  }
+}
+
+/* ========================================
+    小型スマートフォン対応(500px以下)
+   ======================================== */
+@media only screen and (max-width: 500px) {
+  .mobile-corner-cell,
+  .mobile-position-cell {
+    width: 32px !important;
+    padding: 4px 2px;
+  }
+
+  .mobile-corner-cell {
+    height: 22px !important;
+    padding: 1px !important;
+    line-height: 1 !important;
+  }
+
+  .mobile-position-cell {
+    height: 48px;
+  }
+
+  .vertical-text {
+    font-size: 9px;
+    letter-spacing: 0;
+  }
+
+  .mobile-team-input {
+    font-size: 9px !important;
+    padding: 5px 2px 0 2px !important;
+    height: 20px !important;
+    line-height: normal !important;
+  }
+
+  .mobile-team-input::placeholder {
+    font-size: 7px;
+  }
+
+  .mobile-team-header {
+    padding: 1px !important;
+    height: 22px !important;
+    line-height: 1 !important;
+  }
+
+  .mobile-player-name-cell {
+    width: 20%;
+    padding: 0 !important;
+    height: 48px;
+  }
+
+  .mobile-player-name-cell input {
+    font-size: 10px;
+    padding: 7px 2px 0 2px !important;
+    height: 48px !important;
+    line-height: normal !important;
+  }
+
+  .mobile-player-name-cell input::placeholder {
+    font-size: 8px;
+  }
+
+  .mobile-points {
+    min-height: 48px;
+    height: 48px;
+    padding: 4px !important;
+  }
+
+  .mobile-score {
+    padding: 2px 3px !important;
+    height: 30px !important;
+    line-height: 1 !important;
+  }
+
+  .mobile-score .score-numerator,
+  .mobile-score .score-denominator {
+    font-size: 11px !important;
+    line-height: 1 !important;
+  }
+
+  .mobile-score .score-line {
+    width: 18px !important;
+    height: 1.5px !important;
+    margin: 1px 0 !important;
+  }
+
+  .mobile-score .score-winner::before {
+    width: 30px !important;
+    height: 30px !important;
+    border-width: 2px !important;
+  }
+
+  .mobile-score .score-loser::before {
+    border-left: 15px solid transparent !important;
+    border-right: 15px solid transparent !important;
+    border-bottom: 26px solid #e53935 !important;
+  }
+
+  .mobile-score .score-loser::after {
+    border-left: 12px solid transparent !important;
+    border-right: 12px solid transparent !important;
+    border-bottom: 22px solid white !important;
+  }
+
+  .tech-panel {
+    padding: 12px !important;
+    max-width: 92% !important;
+  }
+
+  .tech-btn {
+    padding: 9px !important;
+    font-size: 13px !important;
+  }
+
+  .special-btn {
+    padding: 7px !important;
+    font-size: 10px !important;
+  }
+}
+
+/* ========================================
+    極小スマートフォン対応(400px以下)
+   ======================================== */
+@media only screen and (max-width: 400px) {
+  .score-container {
+    padding: 0 8px 60px !important;
+  }
+
+  .score-table-wrapper {
+    padding: 8px !important;
+  }
+
+  .mobile-corner-cell,
+  .mobile-position-cell {
+    width: 30px !important;
+    padding: 3px 2px;
+  }
+
+  .mobile-corner-cell {
+    height: 20px !important;
+    padding: 1px !important;
+    line-height: 1 !important;
+  }
+
+  .mobile-position-cell {
+    height: 45px;
+  }
+
+  .vertical-text {
+    font-size: 8px;
+  }
+
+  .mobile-team-input {
+    font-size: 8px !important;
+    padding: 4px 2px 0 2px !important;
+    height: 18px !important;
+    line-height: normal !important;
+  }
+
+  .mobile-team-input::placeholder {
+    font-size: 6px;
+  }
+
+  .mobile-team-header {
+    padding: 1px !important;
+    height: 20px !important;
+    line-height: 1 !important;
+  }
+
+  .mobile-player-name-cell {
+    width: 20%;
+    padding: 0 !important;
+    height: 45px;
+  }
+
+  .mobile-player-name-cell input {
+    font-size: 9px;
+    padding: 6px 2px 0 2px !important;
+    height: 45px !important;
+    line-height: normal !important;
+  }
+
+  .mobile-player-name-cell input::placeholder {
+    font-size: 7px;
+  }
+
+  .mobile-points {
+    min-height: 45px;
+    height: 45px;
+    padding: 3px !important;
+  }
+
+  .mobile-score {
+    padding: 2px 3px !important;
+    height: 28px !important;
+    line-height: 1 !important;
+  }
+
+  .mobile-score .score-numerator,
+  .mobile-score .score-denominator {
+    font-size: 10px !important;
+    line-height: 1 !important;
+  }
+
+  .mobile-score .score-line {
+    width: 16px !important;
+    height: 1.5px !important;
+    margin: 1px 0 !important;
+  }
+
+  .mobile-score .score-winner::before {
+    width: 28px !important;
+    height: 28px !important;
+    border-width: 2px !important;
+  }
+
+  .mobile-score .score-loser::before {
+    border-left: 14px solid transparent !important;
+    border-right: 14px solid transparent !important;
+    border-bottom: 24px solid #e53935 !important;
+  }
+
+  .mobile-score .score-loser::after {
+    border-left: 11px solid transparent !important;
+    border-right: 11px solid transparent !important;
+    border-bottom: 20px solid white !important;
+  }
+
+  .tech-panel {
+    padding: 10px !important;
+    max-width: 90% !important;
+  }
+
+  .tech-panel-title {
+    font-size: 11px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .tech-btn {
+    padding: 8px !important;
+    font-size: 12px !important;
+  }
+
+  .hansoku-btn {
+    padding: 7px 12px !important;
+    font-size: 12px !important;
+  }
+
+  .special-btn {
+    padding: 6px !important;
+    font-size: 9px !important;
+  }
+
+  .panel-actions button {
+    padding: 7px !important;
+    font-size: 10px !important;
+  }
+}

@@ -1,0 +1,40 @@
+<li class="collection-item">
+  <div class="schedule-item-container">
+    <div class="schedule-content">
+      <div class="schedule-time">
+        <i class="material-icons">access_time</i>
+        <%= schedule.start_time.strftime("%H:%M") %> - <%= schedule.end_time.strftime("%H:%M") %>
+      </div>
+      <div class="schedule-title"><%= schedule.title %></div>
+      
+      <% if schedule.location.present? %>
+        <div class="schedule-location">
+          <i class="material-icons">place</i>
+          <%= schedule.location %>
+        </div>
+      <% end %>
+      
+      <% if schedule.category.present? %>
+        <span class="schedule-category-chip <%= schedule.category == '大会' ? 'tournament' : 'practice' %>">
+          <%= schedule.category %>
+        </span>
+      <% end %>
+      
+      <% if schedule.memo.present? %>
+        <div class="schedule-memo"><%= schedule.memo %></div>
+      <% end %>
+    </div>
+    
+    <div class="schedule-actions">
+      <a href="#!" class="schedule-action-btn delete-schedule-btn" 
+         data-schedule-id="<%= schedule.id %>"
+         data-schedule-title="<%= schedule.title %>">
+        <i class="material-icons schedule-action-icon">delete</i>
+      </a>
+      
+      <%= form_with model: schedule, url: schedule_path(schedule), method: :delete, 
+                    id: "delete-form-#{schedule.id}", class: "schedule-delete-form" do |f| %>
+      <% end %>
+    </div>
+  </div>
+</li>

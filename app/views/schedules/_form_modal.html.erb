@@ -1,0 +1,58 @@
+<div id="modal-add-schedule" class="modal" style="max-width: 600px;">
+  <div class="modal-content">
+    <h4 style="font-size: 20px; font-weight: 400; color: #424242; margin-bottom: 20px;">スケジュールを追加</h4>
+    
+    <%= form_with model: @schedule, url: schedules_path, local: true do |form| %>
+      <!-- 選択中の日付を hidden で送信 -->
+      <%= form.hidden_field :schedule_date, value: @selected_date, id: "schedule_date_field" %>
+      
+      <div class="input-field">
+        <%= form.text_field :title, id: "schedule_title", placeholder: "例: 定期稽古", required: true %>
+        <%= form.label :title, "タイトル" %>
+      </div>
+      
+      <div class="row" style="margin-bottom: 10px;">
+        <div class="col s12 m6">
+          <label style="font-size: 14px; color: #9e9e9e;">開始時刻</label>
+          <%= form.time_field :start_time_only,
+              class: "browser-default", 
+              style: "display: block; height: 42px; padding: 8px; border: 1px solid #9e9e9e; border-radius: 4px; margin-top: 8px;",
+              required: true %>
+        </div>
+        
+        <div class="col s12 m6">
+          <label style="font-size: 14px; color: #9e9e9e;">終了時刻</label>
+          <%= form.time_field :end_time_only,
+              class: "browser-default", 
+              style: "display: block; height: 42px; padding: 8px; border: 1px solid #9e9e9e; border-radius: 4px; margin-top: 8px;",
+              required: true %>
+        </div>
+      </div>
+      
+      <div class="input-field">
+        <%= form.text_field :location, id: "schedule_location", placeholder: "例: 市立体育館" %>
+        <%= form.label :location, "場所" %>
+      </div>
+      
+      <div style="margin-bottom: 20px;">
+        <label style="font-size: 14px; color: #9e9e9e;">カテゴリ</label>
+        <%= form.select :category, 
+                        options_for_select(Schedule::CATEGORIES),
+                        { include_blank: "選択してください" },
+                        { class: "browser-default", style: "display: block; height: 42px; padding: 8px; border: 1px solid #9e9e9e; border-radius: 4px; margin-top: 8px;" } %>
+      </div>
+      
+      <div class="input-field">
+        <%= form.text_area :memo, id: "schedule_memo", class: "materialize-textarea", placeholder: "メモ(任意)" %>
+        <%= form.label :memo, "メモ" %>
+      </div>
+      
+      <div style="margin-top: 20px;">
+        <%= form.submit "追加", class: "btn", style: "background: #33b5e5; width: 100%; height: 42px; line-height: 42px; padding: 0;" %>
+      </div>
+    <% end %>
+  </div>
+  <div class="modal-footer">
+    <a href="#!" class="modal-close waves-effect btn-flat" style="color: #9e9e9e;">キャンセル</a>
+  </div>
+</div>

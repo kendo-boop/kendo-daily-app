@@ -1,0 +1,6 @@
+/* 剣道スコア管理 - メインスタイルシート */
+
+@import url('matches_score/base.css');
+@import url('matches_score/score_table.css');
+@import url('matches_score/tech_panel.css');
+@import url('matches_score/responsive.css');

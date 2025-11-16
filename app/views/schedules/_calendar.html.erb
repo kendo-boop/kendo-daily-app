@@ -1,0 +1,46 @@
+<div class="calendar-weekdays">
+  <div class="calendar-weekday">日</div>
+  <div class="calendar-weekday">月</div>
+  <div class="calendar-weekday">火</div>
+  <div class="calendar-weekday">水</div>
+  <div class="calendar-weekday">木</div>
+  <div class="calendar-weekday">金</div>
+  <div class="calendar-weekday">土</div>
+</div>
+
+<div class="calendar-days">
+  <% 
+    first_day = Date.new(year, month, 1)
+    last_day = first_day.end_of_month
+    
+    # その月のスケジュールがある日付を取得
+    schedule_dates = schedules.map { |s| s.start_time.to_date }.uniq
+    
+    # 月初の曜日（0=日曜日）
+    first_wday = first_day.wday
+  %>
+  
+  <!-- 空白セルを追加 -->
+  <% first_wday.times do %>
+    <div class="calendar-day empty"></div>
+  <% end %>
+  
+  <!-- 実際の日付 -->
+  <% (1..last_day.day).each do |day| %>
+    <% 
+      date = Date.new(year, month, day)
+      is_today = date == Date.today
+      is_selected = date == selected_date
+      has_event = schedule_dates.include?(date)
+      
+      css_classes = ['calendar-day']
+      css_classes << 'today' if is_today
+      css_classes << 'selected' if is_selected
+      css_classes << 'has-event' if has_event
+    %>
+    
+    <%= link_to day, schedules_path(year: year, month: month, date: date), 
+        class: css_classes.join(' '),
+        data: { date: date.to_s } %>
+  <% end %>
+</div>
