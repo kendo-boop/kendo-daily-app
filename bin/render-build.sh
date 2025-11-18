@@ -8,4 +8,4 @@ bundle exec rails assets:precompile
 bundle exec rails assets:clean
 
 # 無料プランの場合はここにdb:migrateを含める
-# bundle exec rails db:migrate
+bundle exec rails db:migrate
