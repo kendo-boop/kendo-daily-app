@@ -98,7 +98,7 @@ Rails.application.configure do
     domain: "gmail.com",
     user_name: ENV["GMAIL_USER"],
     password: ENV["GMAIL_PASS"],
-    authentication: "login"
+    authentication: "plain"
   }
 
   # 本番環境用のホスト設定
