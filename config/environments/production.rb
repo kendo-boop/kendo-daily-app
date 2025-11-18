@@ -88,4 +88,19 @@ Rails.application.configure do
   #
   # Skip DNS rebinding protection for the default health check endpoint.
   # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
+
+  # Gmail経由でDeviseの確認メールを送る設定
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+    enable_starttls_auto: true,
+    address: "smtp.gmail.com",
+    port: 587,
+    domain: "gmail.com",
+    user_name: ENV["GMAIL_USER"],
+    password: ENV["GMAIL_PASS"],
+    authentication: "login"
+  }
+
+  # 本番環境用のホスト設定
+  config.action_mailer.default_url_options = { host: 'kendo-daily-app.onrender.com' }
 end
