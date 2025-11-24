@@ -10,4 +10,3 @@ class Profile < ApplicationRecord
     self.bio ||= ""
   end
 end
-

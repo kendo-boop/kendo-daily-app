@@ -104,5 +104,5 @@ Rails.application.configure do
   }
 
   # 本番環境用のホスト設定
-  config.action_mailer.default_url_options = { host: 'kendo-daily-app.onrender.com' }
+  config.action_mailer.default_url_options = { host: "kendo-daily-app.onrender.com" }
 end

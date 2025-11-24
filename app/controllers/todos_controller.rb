@@ -1,6 +1,6 @@
 class TodosController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_todo, only: [:update, :destroy]
+  before_action :set_todo, only: [ :update, :destroy ]
 
   def index
     @todos = current_user.todos.ordered
@@ -9,7 +9,7 @@ class TodosController < ApplicationController
 
   def create
     @todo = current_user.todos.build(todo_params)
-    
+
     if @todo.save
       redirect_to todos_path, notice: "TODOを追加しました。"
     else

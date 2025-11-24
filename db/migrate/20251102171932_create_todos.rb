@@ -11,6 +11,6 @@ class CreateTodos < ActiveRecord::Migration[8.0]
       t.timestamps
     end
 
-    add_index :todos, [:user_id, :completed]
+    add_index :todos, [ :user_id, :completed ]
   end
 end

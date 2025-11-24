@@ -9,7 +9,7 @@ class CreateMatches < ActiveRecord::Migration[8.0]
       t.text :memo
       t.timestamps
     end
-    
-    add_index :matches, [:user_id, :match_date]
+
+    add_index :matches, [ :user_id, :match_date ]
   end
 end

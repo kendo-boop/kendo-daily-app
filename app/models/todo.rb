@@ -10,5 +10,5 @@ class Todo < ApplicationRecord
   scope :ordered, -> { order(completed: :asc, priority: :desc, created_at: :desc) }
 
   # カテゴリの定数
-  CATEGORIES = ["技術", "体力", "精神", "道具", "その他"].freeze
+  CATEGORIES = [ "技術", "体力", "精神", "道具", "その他" ].freeze
 end

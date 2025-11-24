@@ -11,7 +11,7 @@ module KendoApp
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 8.0
 
-    #言語を日本語に設定
+    # 言語を日本語に設定
     config.i18n.default_locale = :ja
 
     # Please, add to the `ignore` list any other `lib` subdirectories that do

@@ -14,7 +14,7 @@ class CreateTeamMembers < ActiveRecord::Migration[8.0]
       t.string :result # 'win', 'lose', 'draw'
       t.timestamps
     end
-    
-    add_index :team_members, [:team_score_id, :position]
+
+    add_index :team_members, [ :team_score_id, :position ]
   end
 end

@@ -10,38 +10,38 @@ Rails.application.routes.draw do
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
-  # Defines the root path route ("/") 
+  # Defines the root path route ("/")
   root "profiles#edit"
 
   # ゲストログイン
-  post 'guest_sign_in', to: 'guest_sessions#create'
-  
-  resource :profile, only: [:edit, :update]
-  resources :todos, only: [:index, :create, :update, :destroy]
+  post "guest_sign_in", to: "guest_sessions#create"
+
+  resource :profile, only: [ :edit, :update ]
+  resources :todos, only: [ :index, :create, :update, :destroy ]
 
   resources :schedules do
     collection do
-      get 'by_date/:date', to: 'schedules#by_date', as: 'by_date'
+      get "by_date/:date", to: "schedules#by_date", as: "by_date"
     end
   end
 
-  resources :posts, only: [:index, :create, :destroy] do
+  resources :posts, only: [ :index, :create, :destroy ] do
     collection do
       get :my_posts  # 自分の投稿一覧
     end
-    
+
     member do
       post :like
       delete :unlike
     end
 
-    resources :comments, only: [:create, :destroy]
+    resources :comments, only: [ :create, :destroy ]
   end
 
   resources :matches do
     member do
-      get 'edit_score'  # スコア編集画面
-      patch 'update_score'  # スコア更新
+      get "edit_score"  # スコア編集画面
+      patch "update_score"  # スコア更新
     end
   end
 end

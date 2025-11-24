@@ -11,7 +11,7 @@ class CreateSchedules < ActiveRecord::Migration[8.0]
 
       t.timestamps
     end
-    
-    add_index :schedules, [:user_id, :start_time]
+
+    add_index :schedules, [ :user_id, :start_time ]
   end
 end
