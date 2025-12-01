@@ -1,61 +1,61 @@
-<%= stylesheet_link_tag "matches_score", "data-turbo-track": "reload" %>
+<%= stylesheet_link_tag "matches_index", "data-turbo-track": "reload" %>
 
-<div class="list-container" style="max-width: 1200px; margin: 0 auto; padding: 20px;">
-  <div class="card" style="background: white; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); overflow: hidden;">
-    <div class="card-content" style="padding: 24px;">
-      <div class="card-title" style="font-size: 22px; font-weight: 500; margin-bottom: 20px; color: #212121; display: flex; align-items: center; gap: 8px;">
+<div class="list-container">
+  <div class="card">
+    <div class="card-content">
+      <div class="card-title">
         <i class="material-icons">emoji_events</i>
         試合記録
       </div>
 
       <!-- 試合を追加リンク -->
-      <div style="margin-bottom: 20px; text-align: right;">
-        <%= link_to new_match_path, style: "color: #33b5e5; text-decoration: none; font-weight: 500; font-size: 13px; display: inline-flex; align-items: center; gap: 5px;" do %>
-          <i class="material-icons" style="font-size: 18px;">add</i>
+      <div class="add-match-link-container">
+        <%= link_to new_match_path, class: "add-match-link" do %>
+          <i class="material-icons">add</i>
           試合を追加
         <% end %>
       </div>
 
       <% if @matches.any? %>
-        <ul class="match-list" style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px;">
+        <ul class="match-list">
           <% @matches.each do |match| %>
-            <%= link_to edit_score_match_path(match), data: { turbo: false }, style: "text-decoration: none; color: inherit;" do %>
-              <li class="match-item" style="background: white; border-radius: 8px; padding: 14px 18px; cursor: pointer; transition: all 0.2s ease; border: 1px solid #e0e0e0;">
-                <div class="match-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                  <div class="match-header-left" style="display: flex; align-items: center; gap: 10px;">
-                    <span class="match-title" style="font-size: 14px; font-weight: 600; color: #212121;"><%= match.title %></span>
-                    <span class="match-type" style="display: inline-block; padding: 3px 10px; background: #e3f2fd; color: #1565c0; border-radius: 4px; font-size: 11px; font-weight: 600;">
+            <%= link_to edit_score_match_path(match), data: { turbo: false }, class: "match-item-link" do %>
+              <li class="match-item">
+                <div class="match-header">
+                  <div class="match-header-left">
+                    <span class="match-title"><%= match.title %></span>
+                    <span class="match-type">
                       <%= match.individual? ? '個人戦' : '団体戦' %>
                     </span>
                   </div>
-                  <span class="match-date" style="color: #757575; font-size: 12px; font-weight: 500;">
+                  <span class="match-date">
                     <%= match.match_date.strftime('%Y年%-m月%-d日') %>
                   </span>
                 </div>
 
                 <% if match.team? && match.team_score %>
-                  <div class="match-score-line" style="display: flex; justify-content: space-between; align-items: center; font-size: 14px;">
-                    <div class="team-name team-name-large left" style="flex: 1; color: #212121; font-weight: 500; text-align: left;">
+                  <div class="match-score-line">
+                    <div class="team-name team-name-large left">
                       <%= match.team_score.my_team_name.presence || '未入力' %>
                     </div>
-                    <div class="score-display" style="display: flex; align-items: center; gap: 10px; padding: 0 12px;">
-                      <div class="score-box <%= match.team_score.win? ? 'winner' : 'loser' %>" style="position: relative; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; padding: 4px;">
-                        <div class="score-fraction" style="display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: #212121; z-index: 1;">
+                    <div class="score-display">
+                      <div class="score-box <%= match.team_score.win? ? 'winner' : 'loser' %>">
+                        <div class="score-fraction">
                           <div class="score-numerator"><%= match.team_score.my_total_points %></div>
-                          <div class="score-line" style="width: 24px; height: 2px; background: #212121; margin: 3px 0;"></div>
+                          <div class="score-line"></div>
                           <div class="score-denominator"><%= match.team_score.my_win_count %></div>
                         </div>
                       </div>
-                      <span class="score-separator" style="font-size: 16px; font-weight: 600; color: #757575;">-</span>
-                      <div class="score-box <%= match.team_score.lose? ? 'winner' : 'loser' %>" style="position: relative; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; padding: 4px;">
-                        <div class="score-fraction" style="display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: #212121; z-index: 1;">
+                      <span class="score-separator">-</span>
+                      <div class="score-box <%= match.team_score.lose? ? 'winner' : 'loser' %>">
+                        <div class="score-fraction">
                           <div class="score-numerator"><%= match.team_score.opponent_total_points %></div>
-                          <div class="score-line" style="width: 24px; height: 2px; background: #212121; margin: 3px 0;"></div>
+                          <div class="score-line"></div>
                           <div class="score-denominator"><%= match.team_score.opponent_win_count %></div>
                         </div>
                       </div>
                     </div>
-                    <div class="team-name team-name-large right" style="flex: 1; color: #212121; font-weight: 500; text-align: right;">
+                    <div class="team-name team-name-large right">
                       <%= match.team_score.opponent_team_name.presence || '未入力' %>
                     </div>
                   </div>
@@ -69,35 +69,35 @@
                     opponent_win = !my_win && (my_points > 0 || opponent_points > 0)
                   %>
                   
-                  <div class="match-score-line" style="display: flex; justify-content: space-between; align-items: center; font-size: 14px;">
-                    <div class="team-name player-name-large left" style="flex: 1; color: #212121; font-weight: 500; text-align: left; display: flex; flex-direction: column; gap: 2px;">
-                      <span style="font-size: 11px; color: #757575;"><%= score.my_team_name.presence || '' %></span>
-                      <span class="player-main-name" style="font-size: 14px; font-weight: 500;"><%= score.my_name.presence || 'あなた' %></span>
+                  <div class="match-score-line">
+                    <div class="team-name player-name-large left">
+                      <span class="player-team-name"><%= score.my_team_name.presence || '' %></span>
+                      <span class="player-main-name"><%= score.my_name.presence || 'あなた' %></span>
                     </div>
                     
-                    <div class="score-display" style="display: flex; align-items: center; gap: 10px; padding: 0 12px;">
-                      <div class="score-box <%= my_win ? 'winner' : 'loser' %>" style="position: relative; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; padding: 4px;">
-                        <div class="score-fraction" style="display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: #212121; z-index: 1;">
+                    <div class="score-display">
+                      <div class="score-box <%= my_win ? 'winner' : 'loser' %>">
+                        <div class="score-fraction">
                           <div class="score-numerator"><%= my_points %></div>
-                          <div class="score-line" style="width: 24px; height: 2px; background: #212121; margin: 3px 0;"></div>
+                          <div class="score-line"></div>
                           <div class="score-denominator"><%= my_win ? 1 : 0 %></div>
                         </div>
                       </div>
                       
-                      <span class="score-separator" style="font-size: 16px; font-weight: 600; color: #757575;">-</span>
+                      <span class="score-separator">-</span>
                       
-                      <div class="score-box <%= opponent_win ? 'winner' : 'loser' %>" style="position: relative; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; padding: 4px;">
-                        <div class="score-fraction" style="display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: #212121; z-index: 1;">
+                      <div class="score-box <%= opponent_win ? 'winner' : 'loser' %>">
+                        <div class="score-fraction">
                           <div class="score-numerator"><%= opponent_points %></div>
-                          <div class="score-line" style="width: 24px; height: 2px; background: #212121; margin: 3px 0;"></div>
+                          <div class="score-line"></div>
                           <div class="score-denominator"><%= opponent_win ? 1 : 0 %></div>
                         </div>
                       </div>
                     </div>
                     
-                    <div class="team-name player-name-large right" style="flex: 1; color: #212121; font-weight: 500; text-align: right; display: flex; flex-direction: column; gap: 2px; align-items: flex-end;">
-                      <span style="font-size: 11px; color: #757575;"><%= score.opponent_team_name.presence || '' %></span>
-                      <span class="player-main-name" style="font-size: 14px; font-weight: 500;"><%= score.opponent_name.presence || '相手' %></span>
+                    <div class="team-name player-name-large right">
+                      <span class="player-team-name"><%= score.opponent_team_name.presence || '' %></span>
+                      <span class="player-main-name"><%= score.opponent_name.presence || '相手' %></span>
                     </div>
                   </div>
                 <% end %>
@@ -106,314 +106,8 @@
           <% end %>
         </ul>
       <% else %>
-        <p style="text-align: center; color: #9e9e9e; padding: 40px 0;">まだ試合記録がありません</p>
+        <p class="empty-message">まだ試合記録がありません</p>
       <% end %>
     </div>
   </div>
 </div>
-
-<style>
-  .match-item:hover {
-    border-color: #33b5e5 !important;
-    box-shadow: 0 2px 12px rgba(51, 181, 229, 0.15);
-    transform: translateY(-1px);
-  }
-
-  .score-box.winner::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 42px;
-    height: 42px;
-    border: 2.5px solid #e53935;
-    border-radius: 50%;
-    z-index: 0;
-  }
-
-  .score-box.loser::before {
-    content: '';
-    position: absolute;
-    top: 51%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 0;
-    height: 0;
-    border-left: 24px solid transparent;
-    border-right: 24px solid transparent;
-    border-bottom: 42px solid #1e88e5;
-    z-index: 0;
-  }
-
-  .score-box.loser::after {
-    content: '';
-    position: absolute;
-    top: 51%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 0;
-    height: 0;
-    border-left: 21px solid transparent;
-    border-right: 21px solid transparent;
-    border-bottom: 36px solid white;
-    z-index: 0;
-  }
-
-  /* モバイル版（600px以下）のリスト表示をコンパクトに */
-  @media only screen and (max-width: 600px) {
-    .match-item {
-      padding: 10px 12px !important;
-    }
-
-    .match-header {
-      margin-bottom: 6px !important;
-    }
-
-    .match-title {
-      font-size: 12px !important;
-    }
-
-    .match-type {
-      padding: 2px 6px !important;
-      font-size: 9px !important;
-    }
-
-    .match-date {
-      font-size: 10px !important;
-    }
-
-    .match-score-line {
-      font-size: 12px !important;
-    }
-
-    .team-name-large {
-      font-size: 12px !important;
-    }
-
-    .player-name-large {
-      font-size: 12px !important;
-    }
-
-    .player-name-large span {
-      font-size: 9px !important;
-    }
-
-    .player-main-name {
-      font-size: 12px !important;
-      font-weight: 500 !important;
-    }
-
-    /* 個人戦の選手名（インラインスタイルを上書き） */
-    .player-name-large .player-main-name[style*="font-size: 14px"] {
-      font-size: 12px !important;
-    }
-
-    /* 個人戦のチーム名表記（インラインスタイルを上書き） */
-    .player-name-large span[style*="font-size: 11px"] {
-      font-size: 9px !important;
-    }
-
-    .score-display {
-      gap: 6px !important;
-      padding: 0 8px !important;
-    }
-
-    .score-box {
-      padding: 2px !important;
-    }
-
-    .score-fraction {
-      font-size: 12px !important;
-    }
-
-    .score-numerator,
-    .score-denominator {
-      font-size: 12px !important;
-    }
-
-    .score-line {
-      width: 20px !important;
-      height: 1.5px !important;
-      margin: 2px 0 !important;
-    }
-
-    .score-separator {
-      font-size: 13px !important;
-    }
-
-    .score-box.winner::before {
-      width: 36px !important;
-      height: 36px !important;
-      border-width: 2px !important;
-    }
-
-    .score-box.loser::before {
-      border-left: 20px solid transparent !important;
-      border-right: 20px solid transparent !important;
-      border-bottom: 36px solid #1e88e5 !important;
-    }
-
-    .score-box.loser::after {
-      border-left: 17px solid transparent !important;
-      border-right: 17px solid transparent !important;
-      border-bottom: 31px solid white !important;
-    }
-  }
-
-  /* さらに小さい画面用（500px以下） */
-  @media only screen and (max-width: 500px) {
-    .match-item {
-      padding: 8px 10px !important;
-    }
-
-    .match-header {
-      margin-bottom: 5px !important;
-    }
-
-    .match-title {
-      font-size: 11px !important;
-    }
-
-    .match-type {
-      padding: 2px 5px !important;
-      font-size: 8px !important;
-    }
-
-    .match-date {
-      font-size: 9px !important;
-    }
-
-    .match-score-line {
-      font-size: 11px !important;
-    }
-
-    .team-name-large,
-    .player-name-large {
-      font-size: 11px !important;
-    }
-
-    .player-name-large span {
-      font-size: 8px !important;
-    }
-
-    .player-main-name {
-      font-size: 11px !important;
-    }
-
-    .score-display {
-      gap: 5px !important;
-      padding: 0 6px !important;
-    }
-
-    .score-numerator,
-    .score-denominator {
-      font-size: 11px !important;
-    }
-
-    .score-line {
-      width: 18px !important;
-      margin: 1px 0 !important;
-    }
-
-    .score-separator {
-      font-size: 12px !important;
-    }
-
-    .score-box.winner::before {
-      width: 34px !important;
-      height: 34px !important;
-    }
-
-    .score-box.loser::before {
-      border-left: 18px solid transparent !important;
-      border-right: 18px solid transparent !important;
-      border-bottom: 34px solid #1e88e5 !important;
-    }
-
-    .score-box.loser::after {
-      border-left: 15px solid transparent !important;
-      border-right: 15px solid transparent !important;
-      border-bottom: 29px solid white !important;
-    }
-  }
-
-  /* 極小画面用（400px以下） */
-  @media only screen and (max-width: 400px) {
-    .match-item {
-      padding: 7px 8px !important;
-    }
-
-    .match-header {
-      margin-bottom: 4px !important;
-      flex-wrap: wrap !important;
-    }
-
-    .match-title {
-      font-size: 10px !important;
-    }
-
-    .match-type {
-      padding: 1px 4px !important;
-      font-size: 7px !important;
-    }
-
-    .match-date {
-      font-size: 8px !important;
-    }
-
-    .match-score-line {
-      font-size: 10px !important;
-    }
-
-    .team-name-large,
-    .player-name-large {
-      font-size: 10px !important;
-    }
-
-    .player-name-large span {
-      font-size: 7px !important;
-    }
-
-    .player-main-name {
-      font-size: 10px !important;
-    }
-
-    .score-display {
-      gap: 4px !important;
-      padding: 0 5px !important;
-    }
-
-    .score-numerator,
-    .score-denominator {
-      font-size: 10px !important;
-    }
-
-    .score-line {
-      width: 16px !important;
-      height: 1px !important;
-      margin: 1px 0 !important;
-    }
-
-    .score-separator {
-      font-size: 11px !important;
-    }
-
-    .score-box.winner::before {
-      width: 32px !important;
-      height: 32px !important;
-    }
-
-    .score-box.loser::before {
-      border-left: 16px solid transparent !important;
-      border-right: 16px solid transparent !important;
-      border-bottom: 32px solid #1e88e5 !important;
-    }
-
-    .score-box.loser::after {
-      border-left: 13px solid transparent !important;
-      border-right: 13px solid transparent !important;
-      border-bottom: 27px solid white !important;
-    }
-  }
-</style>
