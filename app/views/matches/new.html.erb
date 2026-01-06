@@ -16,8 +16,8 @@
 
       <div class="form-group">
         <%= f.label :match_type, "試合種別" %>
-        <%= f.select :match_type, 
-            options_for_select([['団体戦', 'team'], ['個人戦', 'individual']], 'team'),
+        <%= f.select :match_type,
+            [['団体戦', 'team'], ['個人戦', 'individual']],
             {},
             { class: "browser-default" } 
         %>
