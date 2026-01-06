@@ -329,10 +329,10 @@
           <!-- 自チーム -->
           <tr>
             <td class="team-cell editable-cell" rowspan="2">
-              <input type="text" placeholder="チーム名" data-field="individual_my_team_name">
+              <input type="text" placeholder="チーム名" value="<%= @score.my_team_name %>" data-field="individual_my_team_name">
             </td>
             <td class="editable-cell">
-              <input type="text" placeholder="選手名" data-field="individual_my_name">
+              <input type="text" placeholder="選手名" value="<%= @score.my_name %>" data-field="individual_my_name">
             </td>
             <td class="total-score-cell" rowspan="2" id="individual-my-score">
               <div class="score-winner">
