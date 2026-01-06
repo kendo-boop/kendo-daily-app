@@ -1,7 +1,9 @@
-<%= stylesheet_link_tag "matches_new", "data-turbo-track": "reload" %>
+<% content_for :head do %>
+  <%= stylesheet_link_tag "matches_new", "data-turbo-track": "reload" %>
+<% end %>
 
-<div class="modal-overlay">
-  <div class="modal-content">
+<div class="match-modal-overlay">
+  <div class="match-modal-content">
     <div class="modal-title">
       新しい試合を追加
     </div>

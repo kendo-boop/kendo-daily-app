@@ -1,11 +1,12 @@
-<%= stylesheet_link_tag "matches_score", "data-turbo-track": "reload" %>
-<%= javascript_include_tag "matches_score/app", defer: true %>
-<%= javascript_include_tag "matches_score/renderer", defer: true %>
-<%= javascript_include_tag "matches_score/handlers", defer: true %>
-<%= javascript_include_tag "matches_score/api", defer: true %>
-<%= javascript_include_tag "matches_score/sync_inputs", defer: true %>
-<%= javascript_include_tag "matches_score", defer: true %>
-
+<% content_for :head do %>
+  <%= stylesheet_link_tag "matches_score", "data-turbo-track": "reload" %>
+  <%= javascript_include_tag "matches_score/app", defer: true %>
+  <%= javascript_include_tag "matches_score/renderer", defer: true %>
+  <%= javascript_include_tag "matches_score/handlers", defer: true %>
+  <%= javascript_include_tag "matches_score/api", defer: true %>
+  <%= javascript_include_tag "matches_score/sync_inputs", defer: true %>
+  <%= javascript_include_tag "matches_score", defer: true %>
+<% end %>
 <!-- ヘッダー -->
 <div class="score-header">
   <div class="header-left">

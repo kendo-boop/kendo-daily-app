@@ -1,5 +1,5 @@
 /* モーダルオーバーレイ */
-.modal-overlay {
+.match-modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -14,7 +14,7 @@
 }
 
 /* モーダルコンテンツ */
-.modal-content {
+.match-modal-content {
   background: white;
   border-radius: 8px;
   padding: 24px;

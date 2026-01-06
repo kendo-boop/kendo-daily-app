@@ -205,6 +205,10 @@
   font-size: 18px;
 }
 
+.modal-content {
+  width: 100% !important;
+}
+
 /* レスポンシブ対応 */
 
 /* 600px以下（タブレット・大画面スマホ） */
