@@ -61,45 +61,36 @@
                       <%= match.team_score.opponent_team_name.presence || '未入力' %>
                     </div>
                   </div>
-                <% elsif match.individual? && match.individual_score %>
-                  <% score = match.individual_score %>
-                  <% my_points = score.points_history.count { |p| p['player'] == 'my' } %>
-                  <% opponent_points = score.points_history.count { |p| p['player'] == 'opponent' } %>
-                  <% 
-                    my_win = (my_points > opponent_points) || 
-                             (my_points == opponent_points && my_points > 0 && score.points_history.find { |p| p['is_first'] }&.dig('player') == 'my')
-                    opponent_win = !my_win && (my_points > 0 || opponent_points > 0)
-                  %>
-                  
+                <% elsif match.individual? && match.individual_score %>                 
                   <div class="match-score-line">
                     <div class="team-name player-name-large left">
-                      <span class="player-team-name"><%= score.my_team_name.presence || '' %></span>
-                      <span class="player-main-name"><%= score.my_name.presence || 'あなた' %></span>
+                      <span class="player-team-name"><%= match.individual_score.my_team_name.presence || '未入力' %></span>
+                      <span class="player-main-name"><%= match.individual_score.my_name.presence || '未入力' %></span>
                     </div>
                     
                     <div class="score-display">
-                      <div class="score-box <%= my_win ? 'winner' : 'loser' %>">
+                      <div class="score-box <%= match.individual_score.win? ? 'winner' : 'loser' %>">
                         <div class="score-fraction">
-                          <div class="score-numerator"><%= my_points %></div>
+                          <div class="score-numerator"><%= match.individual_score.my_point_count %></div>
                           <div class="score-line"></div>
-                          <div class="score-denominator"><%= my_win ? 1 : 0 %></div>
+                          <div class="score-denominator"><%= match.individual_score.win? ? 1 : 0 %></div>
                         </div>
                       </div>
                       
                       <span class="score-separator">-</span>
                       
-                      <div class="score-box <%= opponent_win ? 'winner' : 'loser' %>">
+                      <div class="score-box <%= match.individual_score.lose? ? 'winner' : 'loser' %>">
                         <div class="score-fraction">
-                          <div class="score-numerator"><%= opponent_points %></div>
+                          <div class="score-numerator"><%= match.individual_score.opponent_point_count %></div>
                           <div class="score-line"></div>
-                          <div class="score-denominator"><%= opponent_win ? 1 : 0 %></div>
+                          <div class="score-denominator"><%= match.individual_score.lose? ? 1 : 0 %></div>
                         </div>
                       </div>
                     </div>
                     
                     <div class="team-name player-name-large right">
-                      <span class="player-team-name"><%= score.opponent_team_name.presence || '' %></span>
-                      <span class="player-main-name"><%= score.opponent_name.presence || '相手' %></span>
+                      <span class="player-team-name"><%= match.individual_score.opponent_team_name.presence || '未入力' %></span>
+                      <span class="player-main-name"><%= match.individual_score.opponent_name.presence || '未入力' %></span>
                     </div>
                   </div>
                 <% end %>
