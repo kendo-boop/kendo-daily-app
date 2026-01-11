@@ -1,4 +1,4 @@
-# README
+# 「Kendo Life」剣道選手の成長促進Webアプリケーション
 
 This README would normally document whatever steps are necessary to get the
 application up and running.
