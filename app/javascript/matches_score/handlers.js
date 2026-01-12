@@ -453,8 +453,8 @@ function addDaihyosenHansoku() {
   if (!member.actionHistory) member.actionHistory = [];
   
   if (app.currentTeam === 'my') {
-    if (member.hansoku_count_my >= 4) {
-      alert('反則は最大4回までです');
+    if (member.hansoku_count_my >= 2) {
+      alert('反則は最大2回までです');
       return;
     }
     member.hansoku_count_my++;
@@ -481,8 +481,8 @@ function addDaihyosenHansoku() {
       }
     }
   } else {
-    if (member.hansoku_count_opponent >= 4) {
-      alert('反則は最大4回までです');
+    if (member.hansoku_count_opponent >= 2) {
+      alert('反則は最大2回までです');
       return;
     }
     member.hansoku_count_opponent++;
@@ -536,7 +536,6 @@ function addSpecial(type) {
   const member = app.teamMembersData[app.currentPosition];
   
   member.is_draw = false;
-  member.is_encho = false;
   member.is_hantei = false;
   member.is_fusenshow = false;
   member.is_ipponkachi = false;
@@ -567,7 +566,6 @@ function addIndividualSpecial(type) {
   if (!score) return;
   
   score.is_draw = false;
-  score.is_encho = false;
   score.is_hantei = false;
   score.is_fusenshow = false;
   
@@ -595,7 +593,6 @@ function addDaihyosenSpecial(type) {
   if (!member) return;
   
   member.is_draw = false;
-  member.is_encho = false;
   member.is_hantei = false;
   member.is_fusenshow = false;
   
