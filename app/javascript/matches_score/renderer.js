@@ -32,87 +32,14 @@ function renderMemberScore(member, index) {
   const myParent = myCell.parentElement;
   const opponentParent = opponentCell.parentElement;
   
-  myParent.querySelectorAll('.draw-cross, .encho-wrapper, .hansoku-mark, .winner-circle-my, .winner-circle-opponent').forEach(el => el.remove());
-  opponentParent.querySelectorAll('.draw-cross, .encho-wrapper, .hansoku-mark, .winner-circle-my, .winner-circle-opponent').forEach(el => el.remove());
+  clearExistingMarks(myParent, opponentParent);
+  addEnchoHanteiMarks(member, myParent);
   
-  // 延長・判定マークを表示
-  if (member.is_encho) {
-    const encho = document.createElement('div');
-    encho.className = 'encho-wrapper';
-    encho.innerHTML = '<span class="point-comment">延長</span>';
-    myParent.appendChild(encho);
-  }
+  const { myPointCount, opponentPointCount } = renderPoints(member.points_history, myCell, opponentCell);
   
-  if (member.is_hantei) {
-    const hantei = document.createElement('div');
-    hantei.className = 'encho-wrapper';
-    hantei.innerHTML = '<span class="point-comment">判定</span>';
-    myParent.appendChild(hantei);
-  }
-  
-  // 技を表示
-  let myPointCount = 0;
-  let opponentPointCount = 0;
-  
-  if (member.points_history && Array.isArray(member.points_history)) {
-    member.points_history.forEach((point, overallIndex) => {
-      const gridItem = document.createElement('div');
-      gridItem.className = 'grid-item';
-      gridItem.style.gridColumn = overallIndex + 1;
-      
-      if (point.player === 'my') {
-        myPointCount++;
-        gridItem.style.gridRow = 1;
-        gridItem.innerHTML = point.is_first 
-          ? `<span class="point-circle">${displayPoint(point.point)}</span>` 
-          : `<span class="point-text">${displayPoint(point.point)}</span>`;
-        myCell.appendChild(gridItem);
-      } else {
-        opponentPointCount++;
-        gridItem.style.gridRow = 2;
-        gridItem.innerHTML = point.is_first 
-          ? `<span class="point-circle">${displayPoint(point.point)}</span>` 
-          : `<span class="point-text">${displayPoint(point.point)}</span>`;
-        opponentCell.appendChild(gridItem);
-      }
-    });
-  }
-  
-  // 勝者の○印を表示
-  if (!member.is_draw) {
-    const myHas2Points = myPointCount >= 2;
-    const opponentHas2Points = opponentPointCount >= 2;
-    const isIpponkachi = member.is_ipponkachi;
-    
-    if (myHas2Points || (isIpponkachi && myPointCount === 1 && opponentPointCount === 0)) {
-      const winnerCircle = document.createElement('div');
-      winnerCircle.className = 'winner-circle-my';
-      myParent.appendChild(winnerCircle);
-    } else if (opponentHas2Points || (isIpponkachi && opponentPointCount === 1 && myPointCount === 0)) {
-      const winnerCircle = document.createElement('div');
-      winnerCircle.className = 'winner-circle-opponent';
-      opponentParent.appendChild(winnerCircle);
-    } else if (myPointCount > 0 && opponentPointCount > 0 && myPointCount > opponentPointCount) {
-      const winnerCircle = document.createElement('div');
-      winnerCircle.className = 'winner-circle-my';
-      myParent.appendChild(winnerCircle);
-    } else if (myPointCount > 0 && opponentPointCount > 0 && opponentPointCount > myPointCount) {
-      const winnerCircle = document.createElement('div');
-      winnerCircle.className = 'winner-circle-opponent';
-      opponentParent.appendChild(winnerCircle);
-    }
-  }
-  
-  // 反則マークを表示
+  addWinnerCircleNormal(member, myPointCount, opponentPointCount, myParent, opponentParent);
   renderHansokuMarks(member, myParent, opponentParent);
-  
-  // 引き分けの×印を最後に表示
-  if (member.is_draw) {
-    const drawCross = document.createElement('div');
-    drawCross.className = 'draw-cross';
-    drawCross.innerHTML = `<svg><line x1="0" y1="0" x2="100%" y2="100%" stroke="#e53935" stroke-width="3"/><line x1="100%" y1="0" x2="0" y2="100%" stroke="#e53935" stroke-width="3"/></svg>`;
-    myParent.appendChild(drawCross);
-  }
+  addDrawCross(member, myParent);
   
   // モバイル版も同時にレンダリング
   renderMobileMemberScore(member, index);
@@ -154,89 +81,14 @@ function renderIndividualScore() {
   const myParent = myCell.parentElement;
   const opponentParent = opponentCell.parentElement;
   
-  // 既存のマークをクリア
-  myParent.querySelectorAll('.draw-cross, .encho-wrapper, .hansoku-mark, .winner-circle-my, .winner-circle-opponent').forEach(el => el.remove());
-  opponentParent.querySelectorAll('.draw-cross, .encho-wrapper, .hansoku-mark, .winner-circle-my, .winner-circle-opponent').forEach(el => el.remove());
+  clearExistingMarks(myParent, opponentParent);
+  addEnchoHanteiMarks(score, myParent);
   
-  // 延長・判定マークを表示
-  if (score.is_encho) {
-    const encho = document.createElement('div');
-    encho.className = 'encho-wrapper';
-    encho.innerHTML = '<span class="point-comment">延長</span>';
-    myParent.appendChild(encho);
-  }
+  const { myPointCount, opponentPointCount } = renderPoints(score.points_history, myCell, opponentCell);
   
-  if (score.is_hantei) {
-    const hantei = document.createElement('div');
-    hantei.className = 'encho-wrapper';
-    hantei.innerHTML = '<span class="point-comment">判定</span>';
-    myParent.appendChild(hantei);
-  }
-  
-  // 技を表示
-  let myPointCount = 0;
-  let opponentPointCount = 0;
-  
-  if (score.points_history && Array.isArray(score.points_history)) {
-    score.points_history.forEach((point, overallIndex) => {
-      const gridItem = document.createElement('div');
-      gridItem.className = 'grid-item';
-      gridItem.style.gridColumn = overallIndex + 1;
-      
-      if (point.player === 'my') {
-        myPointCount++;
-        gridItem.style.gridRow = 1;
-        gridItem.innerHTML = point.is_first 
-          ? `<span class="point-circle">${displayPoint(point.point)}</span>` 
-          : `<span class="point-text">${displayPoint(point.point)}</span>`;
-        myCell.appendChild(gridItem);
-      } else {
-        opponentPointCount++;
-        gridItem.style.gridRow = 2;
-        gridItem.innerHTML = point.is_first 
-          ? `<span class="point-circle">${displayPoint(point.point)}</span>` 
-          : `<span class="point-text">${displayPoint(point.point)}</span>`;
-        opponentCell.appendChild(gridItem);
-      }
-    });
-  }
-  
-  // 勝者の○印を表示
-  if (!score.is_draw) {
-    const myHas2Points = myPointCount >= 2;
-    const opponentHas2Points = opponentPointCount >= 2;
-    
-    if (myHas2Points) {
-      const winnerCircle = document.createElement('div');
-      winnerCircle.className = 'winner-circle-my';
-      myParent.appendChild(winnerCircle);
-    } else if (opponentHas2Points) {
-      const winnerCircle = document.createElement('div');
-      winnerCircle.className = 'winner-circle-opponent';
-      opponentParent.appendChild(winnerCircle);
-    } else if (myPointCount > 0 && opponentPointCount > 0) {
-      if (myPointCount > opponentPointCount) {
-        const winnerCircle = document.createElement('div');
-        winnerCircle.className = 'winner-circle-my';
-        myParent.appendChild(winnerCircle);
-      } else if (opponentPointCount > myPointCount) {
-        const winnerCircle = document.createElement('div');
-        winnerCircle.className = 'winner-circle-opponent';
-        opponentParent.appendChild(winnerCircle);
-      }
-    }
-  }
-  
-  // 反則マークを表示
+  addWinnerCircleIndividual(score, myPointCount, opponentPointCount, myParent, opponentParent);
   renderHansokuMarks(score, myParent, opponentParent);
-  
-  // 引き分けの×印を表示
-  if (score.is_draw) {
-    const drawCross = document.createElement('div');
-    drawCross.className = 'draw-cross';
-    drawCross.innerHTML = `<svg><line x1="0" y1="0" x2="100%" y2="100%" stroke="#e53935" stroke-width="3"/><line x1="100%" y1="0" x2="0" y2="100%" stroke="#e53935" stroke-width="3"/></svg>`;
-    myParent.appendChild(drawCross);
-  }
+  addDrawCross(score, myParent);
   
   updateIndividualTotalScore();
 }
@@ -270,75 +122,14 @@ function renderDaihyosenScore() {
   const myParent = myCell.parentElement;
   const opponentParent = opponentCell.parentElement;
   
-  myParent.querySelectorAll('.draw-cross, .encho-wrapper, .hansoku-mark, .winner-circle-my, .winner-circle-opponent').forEach(el => el.remove());
-  opponentParent.querySelectorAll('.draw-cross, .encho-wrapper, .hansoku-mark, .winner-circle-my, .winner-circle-opponent').forEach(el => el.remove());
+  clearExistingMarks(myParent, opponentParent);
+  addEnchoHanteiMarks(member, myParent);
   
-  // 延長・判定マークを表示
-  if (member.is_encho) {
-    const encho = document.createElement('div');
-    encho.className = 'encho-wrapper';
-    encho.innerHTML = '<span class="point-comment">延長</span>';
-    myParent.appendChild(encho);
-  }
+  const { myPointCount, opponentPointCount } = renderPoints(member.points_history, myCell, opponentCell);
   
-  if (member.is_hantei) {
-    const hantei = document.createElement('div');
-    hantei.className = 'encho-wrapper';
-    hantei.innerHTML = '<span class="point-comment">判定</span>';
-    myParent.appendChild(hantei);
-  }
-  
-  // 技を表示（代表戦は1本勝負）
-  let myPointCount = 0;
-  let opponentPointCount = 0;
-  
-  if (member.points_history && Array.isArray(member.points_history)) {
-    member.points_history.forEach((point, overallIndex) => {
-      const gridItem = document.createElement('div');
-      gridItem.className = 'grid-item';
-      gridItem.style.gridColumn = overallIndex + 1;
-      
-      if (point.player === 'my') {
-        myPointCount++;
-        gridItem.style.gridRow = 1;
-        gridItem.innerHTML = point.is_first 
-          ? `<span class="point-circle">${displayPoint(point.point)}</span>` 
-          : `<span class="point-text">${displayPoint(point.point)}</span>`;
-        myCell.appendChild(gridItem);
-      } else {
-        opponentPointCount++;
-        gridItem.style.gridRow = 2;
-        gridItem.innerHTML = point.is_first 
-          ? `<span class="point-circle">${displayPoint(point.point)}</span>` 
-          : `<span class="point-text">${displayPoint(point.point)}</span>`;
-        opponentCell.appendChild(gridItem);
-      }
-    });
-  }
-  
-  // 勝者の○印を表示（代表戦は1本勝負）
-  if (!member.is_draw) {
-    if (myPointCount === 1) {
-      const winnerCircle = document.createElement('div');
-      winnerCircle.className = 'winner-circle-my';
-      myParent.appendChild(winnerCircle);
-    } else if (opponentPointCount === 1) {
-      const winnerCircle = document.createElement('div');
-      winnerCircle.className = 'winner-circle-opponent';
-      opponentParent.appendChild(winnerCircle);
-    }
-  }
-  
-  // 反則マークを表示
+  addWinnerCircleDaihyosen(member, myPointCount, opponentPointCount, myParent, opponentParent);
   renderHansokuMarks(member, myParent, opponentParent);
-  
-  // 引き分けの×印を表示
-  if (member.is_draw) {
-    const drawCross = document.createElement('div');
-    drawCross.className = 'draw-cross';
-    drawCross.innerHTML = `<svg><line x1="0" y1="0" x2="100%" y2="100%" stroke="#e53935" stroke-width="3"/><line x1="100%" y1="0" x2="0" y2="100%" stroke="#e53935" stroke-width="3"/></svg>`;
-    myParent.appendChild(drawCross);
-  }
+  addDrawCross(member, myParent);
   
   // モバイル版も同時にレンダリング
   renderMobileDaihyosenScore();
@@ -362,87 +153,14 @@ function renderMobileMemberScore(member, index) {
   const myParent = myCell.parentElement;
   const opponentParent = opponentCell.parentElement;
   
-  myParent.querySelectorAll('.draw-cross, .encho-wrapper, .hansoku-mark, .winner-circle-my, .winner-circle-opponent').forEach(el => el.remove());
-  opponentParent.querySelectorAll('.draw-cross, .encho-wrapper, .hansoku-mark, .winner-circle-my, .winner-circle-opponent').forEach(el => el.remove());
+  clearExistingMarks(myParent, opponentParent);
+  addEnchoHanteiMarks(member, myParent);
   
-  // 延長・判定マークを表示
-  if (member.is_encho) {
-    const encho = document.createElement('div');
-    encho.className = 'encho-wrapper';
-    encho.innerHTML = '<span class="point-comment">延長</span>';
-    myParent.appendChild(encho);
-  }
+  const { myPointCount, opponentPointCount } = renderPoints(member.points_history, myCell, opponentCell);
   
-  if (member.is_hantei) {
-    const hantei = document.createElement('div');
-    hantei.className = 'encho-wrapper';
-    hantei.innerHTML = '<span class="point-comment">判定</span>';
-    myParent.appendChild(hantei);
-  }
-  
-  // 技を表示
-  let myPointCount = 0;
-  let opponentPointCount = 0;
-  
-  if (member.points_history && Array.isArray(member.points_history)) {
-    member.points_history.forEach((point, overallIndex) => {
-      const gridItem = document.createElement('div');
-      gridItem.className = 'grid-item';
-      gridItem.style.gridColumn = overallIndex + 1;
-      
-      if (point.player === 'my') {
-        myPointCount++;
-        gridItem.style.gridRow = 1;
-        gridItem.innerHTML = point.is_first 
-          ? `<span class="point-circle">${displayPoint(point.point)}</span>` 
-          : `<span class="point-text">${displayPoint(point.point)}</span>`;
-        myCell.appendChild(gridItem);
-      } else {
-        opponentPointCount++;
-        gridItem.style.gridRow = 2;
-        gridItem.innerHTML = point.is_first 
-          ? `<span class="point-circle">${displayPoint(point.point)}</span>` 
-          : `<span class="point-text">${displayPoint(point.point)}</span>`;
-        opponentCell.appendChild(gridItem);
-      }
-    });
-  }
-  
-  // 勝者の○印を表示
-  if (!member.is_draw) {
-    const myHas2Points = myPointCount >= 2;
-    const opponentHas2Points = opponentPointCount >= 2;
-    const isIpponkachi = member.is_ipponkachi;
-    
-    if (myHas2Points || (isIpponkachi && myPointCount === 1 && opponentPointCount === 0)) {
-      const winnerCircle = document.createElement('div');
-      winnerCircle.className = 'winner-circle-my';
-      myParent.appendChild(winnerCircle);
-    } else if (opponentHas2Points || (isIpponkachi && opponentPointCount === 1 && myPointCount === 0)) {
-      const winnerCircle = document.createElement('div');
-      winnerCircle.className = 'winner-circle-opponent';
-      opponentParent.appendChild(winnerCircle);
-    } else if (myPointCount > 0 && opponentPointCount > 0 && myPointCount > opponentPointCount) {
-      const winnerCircle = document.createElement('div');
-      winnerCircle.className = 'winner-circle-my';
-      myParent.appendChild(winnerCircle);
-    } else if (myPointCount > 0 && opponentPointCount > 0 && opponentPointCount > myPointCount) {
-      const winnerCircle = document.createElement('div');
-      winnerCircle.className = 'winner-circle-opponent';
-      opponentParent.appendChild(winnerCircle);
-    }
-  }
-  
-  // 反則マークを表示
+  addWinnerCircleNormal(member, myPointCount, opponentPointCount, myParent, opponentParent);
   renderHansokuMarks(member, myParent, opponentParent);
-  
-  // 引き分けの×印を表示
-  if (member.is_draw) {
-    const drawCross = document.createElement('div');
-    drawCross.className = 'draw-cross';
-    drawCross.innerHTML = `<svg><line x1="0" y1="0" x2="100%" y2="100%" stroke="#e53935" stroke-width="3"/><line x1="100%" y1="0" x2="0" y2="100%" stroke="#e53935" stroke-width="3"/></svg>`;
-    myParent.appendChild(drawCross);
-  }
+  addDrawCross(member, myParent);
 }
 
 function renderMobileDaihyosenScore() {
@@ -462,71 +180,14 @@ function renderMobileDaihyosenScore() {
   const myParent = myCell.parentElement;
   const opponentParent = opponentCell.parentElement;
   
-  myParent.querySelectorAll('.draw-cross, .encho-wrapper, .hansoku-mark, .winner-circle-my, .winner-circle-opponent').forEach(el => el.remove());
-  opponentParent.querySelectorAll('.draw-cross, .encho-wrapper, .hansoku-mark, .winner-circle-my, .winner-circle-opponent').forEach(el => el.remove());
+  clearExistingMarks(myParent, opponentParent);
+  addEnchoHanteiMarks(member, myParent);
   
-  // デスクトップ版と同じロジックで描画
-  if (member.is_encho) {
-    const encho = document.createElement('div');
-    encho.className = 'encho-wrapper';
-    encho.innerHTML = '<span class="point-comment">延長</span>';
-    myParent.appendChild(encho);
-  }
+  const { myPointCount, opponentPointCount } = renderPoints(member.points_history, myCell, opponentCell);
   
-  if (member.is_hantei) {
-    const hantei = document.createElement('div');
-    hantei.className = 'encho-wrapper';
-    hantei.innerHTML = '<span class="point-comment">判定</span>';
-    myParent.appendChild(hantei);
-  }
-  
-  let myPointCount = 0;
-  let opponentPointCount = 0;
-  
-  if (member.points_history && Array.isArray(member.points_history)) {
-    member.points_history.forEach((point, overallIndex) => {
-      const gridItem = document.createElement('div');
-      gridItem.className = 'grid-item';
-      gridItem.style.gridColumn = overallIndex + 1;
-      
-      if (point.player === 'my') {
-        myPointCount++;
-        gridItem.style.gridRow = 1;
-        gridItem.innerHTML = point.is_first 
-          ? `<span class="point-circle">${displayPoint(point.point)}</span>` 
-          : `<span class="point-text">${displayPoint(point.point)}</span>`;
-        myCell.appendChild(gridItem);
-      } else {
-        opponentPointCount++;
-        gridItem.style.gridRow = 2;
-        gridItem.innerHTML = point.is_first 
-          ? `<span class="point-circle">${displayPoint(point.point)}</span>` 
-          : `<span class="point-text">${displayPoint(point.point)}</span>`;
-        opponentCell.appendChild(gridItem);
-      }
-    });
-  }
-  
-  if (!member.is_draw) {
-    if (myPointCount === 1) {
-      const winnerCircle = document.createElement('div');
-      winnerCircle.className = 'winner-circle-my';
-      myParent.appendChild(winnerCircle);
-    } else if (opponentPointCount === 1) {
-      const winnerCircle = document.createElement('div');
-      winnerCircle.className = 'winner-circle-opponent';
-      opponentParent.appendChild(winnerCircle);
-    }
-  }
-  
+  addWinnerCircleDaihyosen(member, myPointCount, opponentPointCount, myParent, opponentParent);
   renderHansokuMarks(member, myParent, opponentParent);
-  
-  if (member.is_draw) {
-    const drawCross = document.createElement('div');
-    drawCross.className = 'draw-cross';
-    drawCross.innerHTML = `<svg><line x1="0" y1="0" x2="100%" y2="100%" stroke="#e53935" stroke-width="3"/><line x1="100%" y1="0" x2="0" y2="100%" stroke="#e53935" stroke-width="3"/></svg>`;
-    myParent.appendChild(drawCross);
-  }
+  addDrawCross(member, myParent);
 }
 
 // ========================================
@@ -617,20 +278,10 @@ function updateTotalScores() {
     if (member.is_draw) {
       // 引き分け：勝者数に加算しない
     } else if (member.is_hantei) {
-      if (myPoints > opponentPoints) {
-        myWinCount++;
-      } else if (opponentPoints > myPoints) {
-        opponentWinCount++;
-      } else {
-        const firstPoint = member.points_history.find(p => p.is_first);
-        if (firstPoint && firstPoint.player === 'my') {
-          myWinCount++;
-        } else {
-          opponentWinCount++;
-        }
-      }
     } else {
-      if (myPoints > opponentPoints) {
+      if (myPoints === opponentPoints) {
+        //引き分け：勝者数に加算しない
+      } else if (myPoints > opponentPoints) {
         myWinCount++;
       } else if (opponentPoints > myPoints) {
         opponentWinCount++;
@@ -662,11 +313,33 @@ function updateTotalScores() {
   const opponentScoreEl = document.getElementById('opponent-total-score');
   
   if (myScoreEl) {
-    myScoreEl.innerHTML = `<div class="${isMyWin ? 'score-winner' : 'score-loser'}"><div class="score-fraction"><div class="score-numerator">${myTotalPoints}</div><div class="score-line"></div><div class="score-denominator">${myWinCount}</div></div></div>`;
+    myScoreEl.innerHTML = 
+    `<div class="${isMyWin ? 'score-winner' : 'score-loser'}">
+      <div class="score-fraction">
+        <div class="score-numerator">
+          ${myTotalPoints}
+        </div>
+        <div class="score-line"></div>
+        <div class="score-denominator">
+          ${myWinCount}
+        </div>
+      </div>
+    </div>`;
   }
   
   if (opponentScoreEl) {
-    opponentScoreEl.innerHTML = `<div class="${!isMyWin ? 'score-winner' : 'score-loser'}"><div class="score-fraction"><div class="score-numerator">${opponentTotalPoints}</div><div class="score-line"></div><div class="score-denominator">${opponentWinCount}</div></div></div>`;
+    opponentScoreEl.innerHTML =
+    `<div class="${!isMyWin ? 'score-winner' : 'score-loser'}">
+      <div class="score-fraction">
+        <div class="score-numerator">
+          ${opponentTotalPoints}
+        </div>
+        <div class="score-line"></div>
+        <div class="score-denominator">
+          ${opponentWinCount}
+        </div>
+      </div>
+    </div>`;
   }
   
   // モバイル版の更新
@@ -674,11 +347,33 @@ function updateTotalScores() {
   const opponentScoreMobileEl = document.getElementById('opponent-total-score-mobile');
   
   if (myScoreMobileEl) {
-    myScoreMobileEl.innerHTML = `<div class="${isMyWin ? 'score-winner' : 'score-loser'}"><div class="score-fraction"><div class="score-numerator">${myTotalPoints}</div><div class="score-line"></div><div class="score-denominator">${myWinCount}</div></div></div>`;
+    myScoreMobileEl.innerHTML = 
+    `<div class="${isMyWin ? 'score-winner' : 'score-loser'}">
+      <div class="score-fraction">
+        <div class="score-numerator">
+          ${myTotalPoints}
+        </div>
+        <div class="score-line"></div>
+        <div class="score-denominator">
+          ${myWinCount}
+        </div>
+      </div>
+    </div>`;
   }
   
   if (opponentScoreMobileEl) {
-    opponentScoreMobileEl.innerHTML = `<div class="${!isMyWin ? 'score-winner' : 'score-loser'}"><div class="score-fraction"><div class="score-numerator">${opponentTotalPoints}</div><div class="score-line"></div><div class="score-denominator">${opponentWinCount}</div></div></div>`;
+    opponentScoreMobileEl.innerHTML = 
+    `<div class="${!isMyWin ? 'score-winner' : 'score-loser'}">
+      <div class="score-fraction">
+        <div class="score-numerator">
+          ${opponentTotalPoints}
+        </div>
+        <div class="score-line"></div>
+        <div class="score-denominator">
+          ${opponentWinCount}
+        </div>
+      </div>
+    </div>`;
   }
 }
 
@@ -721,10 +416,171 @@ function updateIndividualTotalScore() {
   const opponentScoreEl = document.getElementById('individual-opponent-score');
   
   if (myScoreEl) {
-    myScoreEl.innerHTML = `<div class="${isMyWin ? 'score-winner' : 'score-loser'}"><div class="score-fraction"><div class="score-numerator">${myPoints}</div><div class="score-line"></div><div class="score-denominator">${isMyWin ? '1' : '0'}</div></div></div>`;
+    myScoreEl.innerHTML = 
+    `<div class="${isMyWin ? 'score-winner' : 'score-loser'}">
+      <div class="score-fraction">
+        <div class="score-numerator">
+          ${myPoints}
+        </div>
+        <div class="score-line"></div>
+        <div class="score-denominator">
+          ${isMyWin ? '1' : '0'}
+        </div>
+      </div>
+    </div>`;
   }
   
   if (opponentScoreEl) {
-    opponentScoreEl.innerHTML = `<div class="${isOpponentWin ? 'score-winner' : 'score-loser'}"><div class="score-fraction"><div class="score-numerator">${opponentPoints}</div><div class="score-line"></div><div class="score-denominator">${isOpponentWin ? '1' : '0'}</div></div></div>`;
+    opponentScoreEl.innerHTML = 
+    `<div class="${isOpponentWin ? 'score-winner' : 'score-loser'}">
+      <div class="score-fraction">
+        <div class="score-numerator">
+          ${opponentPoints}
+        </div>
+        <div class="score-line"></div>
+        <div class="score-denominator">
+          ${isOpponentWin ? '1' : '0'}
+        </div>
+      </div>
+    </div>`;
+  }
+}
+
+// ========================================
+// 共通処理メソッド
+// ========================================
+
+// 既存のマークをクリア
+function clearExistingMarks(myParent, opponentParent) {
+  myParent.querySelectorAll('.draw-cross, .encho-wrapper, .hansoku-mark, .winner-circle-my, .winner-circle-opponent').forEach(el => el.remove());
+  opponentParent.querySelectorAll('.draw-cross, .encho-wrapper, .hansoku-mark, .winner-circle-my, .winner-circle-opponent').forEach(el => el.remove());
+}
+
+// 延長・判定マークを追加
+function addEnchoHanteiMarks(data, myParent) {
+  if (data.is_encho) {
+    const encho = document.createElement('div');
+    encho.className = 'encho-wrapper';
+    encho.innerHTML = '<span class="point-comment">延長</span>';
+    myParent.appendChild(encho);
+  }
+  
+  if (data.is_hantei) {
+    const hantei = document.createElement('div');
+    hantei.className = 'encho-wrapper';
+    hantei.innerHTML = '<span class="point-comment">判定</span>';
+    myParent.appendChild(hantei);
+  }
+}
+
+// 技（ポイント）を表示
+function renderPoints(pointsHistory, myCell, opponentCell) {
+  let myPointCount = 0;
+  let opponentPointCount = 0;
+  
+  if (pointsHistory && Array.isArray(pointsHistory)) {
+    pointsHistory.forEach((point, overallIndex) => {
+      const gridItem = document.createElement('div');
+      gridItem.className = 'grid-item';
+      gridItem.style.gridColumn = overallIndex + 1;
+      
+      if (point.player === 'my') {
+        myPointCount++;
+        gridItem.style.gridRow = 1;
+        gridItem.innerHTML = point.is_first 
+          ? `<span class="point-circle">${displayPoint(point.point)}</span>` 
+          : `<span class="point-text">${displayPoint(point.point)}</span>`;
+        myCell.appendChild(gridItem);
+      } else {
+        opponentPointCount++;
+        gridItem.style.gridRow = 2;
+        gridItem.innerHTML = point.is_first 
+          ? `<span class="point-circle">${displayPoint(point.point)}</span>` 
+          : `<span class="point-text">${displayPoint(point.point)}</span>`;
+        opponentCell.appendChild(gridItem);
+      }
+    });
+  }
+  
+  return { myPointCount, opponentPointCount };
+}
+
+// 勝者の○印を表示（通常試合用）
+function addWinnerCircleNormal(data, myPointCount, opponentPointCount, myParent, opponentParent) {
+  if (data.is_draw) return;
+  
+  const myHas2Points = myPointCount >= 2;
+  const opponentHas2Points = opponentPointCount >= 2;
+  const isIpponkachi = data.is_ipponkachi;
+  
+  if (myHas2Points || (isIpponkachi && myPointCount === 1 && opponentPointCount === 0)) {
+    const winnerCircle = document.createElement('div');
+    winnerCircle.className = 'winner-circle-my';
+    myParent.appendChild(winnerCircle);
+  } else if (opponentHas2Points || (isIpponkachi && opponentPointCount === 1 && myPointCount === 0)) {
+    const winnerCircle = document.createElement('div');
+    winnerCircle.className = 'winner-circle-opponent';
+    opponentParent.appendChild(winnerCircle);
+  } else if (myPointCount > 0 && opponentPointCount > 0 && myPointCount > opponentPointCount) {
+    const winnerCircle = document.createElement('div');
+    winnerCircle.className = 'winner-circle-my';
+    myParent.appendChild(winnerCircle);
+  } else if (myPointCount > 0 && opponentPointCount > 0 && opponentPointCount > myPointCount) {
+    const winnerCircle = document.createElement('div');
+    winnerCircle.className = 'winner-circle-opponent';
+    opponentParent.appendChild(winnerCircle);
+  }
+}
+
+// 勝者の○印を表示（個人戦用）
+function addWinnerCircleIndividual(data, myPointCount, opponentPointCount, myParent, opponentParent) {
+  if (data.is_draw) return;
+  
+  const myHas2Points = myPointCount >= 2;
+  const opponentHas2Points = opponentPointCount >= 2;
+  
+  if (myHas2Points) {
+    const winnerCircle = document.createElement('div');
+    winnerCircle.className = 'winner-circle-my';
+    myParent.appendChild(winnerCircle);
+  } else if (opponentHas2Points) {
+    const winnerCircle = document.createElement('div');
+    winnerCircle.className = 'winner-circle-opponent';
+    opponentParent.appendChild(winnerCircle);
+  } else if (myPointCount > 0 && opponentPointCount > 0) {
+    if (myPointCount > opponentPointCount) {
+      const winnerCircle = document.createElement('div');
+      winnerCircle.className = 'winner-circle-my';
+      myParent.appendChild(winnerCircle);
+    } else if (opponentPointCount > myPointCount) {
+      const winnerCircle = document.createElement('div');
+      winnerCircle.className = 'winner-circle-opponent';
+      opponentParent.appendChild(winnerCircle);
+    }
+  }
+}
+
+// 勝者の○印を表示（代表戦用：1本勝負）
+function addWinnerCircleDaihyosen(data, myPointCount, opponentPointCount, myParent, opponentParent) {
+  if (data.is_draw) return;
+  
+  if (myPointCount === 1) {
+    const winnerCircle = document.createElement('div');
+    winnerCircle.className = 'winner-circle-my';
+    myParent.appendChild(winnerCircle);
+  } else if (opponentPointCount === 1) {
+    const winnerCircle = document.createElement('div');
+    winnerCircle.className = 'winner-circle-opponent';
+    opponentParent.appendChild(winnerCircle);
+  }
+}
+
+// 引き分けの×印を表示
+function addDrawCross(data, myParent) {
+  if (data.is_draw) {
+    const drawCross = document.createElement('div');
+    drawCross.className = 'draw-cross';
+    drawCross.innerHTML = `<svg><line x1="0" y1="0" x2="100%" y2="100%" stroke="#e53935" stroke-width="3"/><line x1="100%" y1="0" x2="0" y2="100%" stroke="#e53935" stroke-width="3"/></svg>`;
+    myParent.appendChild(drawCross);
   }
 }

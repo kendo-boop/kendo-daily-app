@@ -53,14 +53,9 @@ nav ul a {
 .btn {
   background: #33b5e5;
   text-transform: none;
-  font-weight: 400;
+  /* font-weight: 400; */
   border-radius: 2px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.btn:hover {
-  background: #1e88e5;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
 
 /* コンテナ */

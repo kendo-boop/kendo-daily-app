@@ -24,11 +24,11 @@
   </div>
   <div class="header-actions">
     <%= link_to match_path(@match), data: { turbo_method: :delete, turbo_confirm: "本当に削除しますか？" }, class: "btn btn-secondary" do %>
-      <i class="material-icons" style="font-size: 18px;">delete</i>
+      <i class="material-icons">delete</i>
       削除
     <% end %>
     <button class="btn btn-primary" onclick="saveScore()">
-      <i class="material-icons" style="font-size: 18px;">save</i>
+      <i class="material-icons">save</i>
       保存
     </button>
   </div>
@@ -36,9 +36,9 @@
 
 <% if @match.team? %>
   <!-- 代表戦ボタン -->
-  <div style="text-align: right; margin-bottom: 12px; max-width: 1100px; margin-left: auto; margin-right: auto; padding: 0 24px;">
-    <button class="btn btn-secondary" id="toggleDaihyosenBtn" onclick="toggleDaihyosen()" style="font-size: 13px; padding: 8px 16px;">
-      <i class="material-icons" style="font-size: 16px;">add</i>
+  <div class="daihyosen-btn-container">
+    <button class="btn btn-secondary" id="toggleDaihyosenBtn" onclick="toggleDaihyosen()">
+      <i class="material-icons">add</i>
       代表戦を追加
     </button>
   </div>
@@ -49,21 +49,21 @@
       <table class="score-table">
         <thead>
           <tr>
-            <th style="width: 100px;">チーム名</th>
-            <th style="width: 110px;">先鋒</th>
-            <th style="width: 110px;">次鋒</th>
-            <th style="width: 110px;">中堅</th>
-            <th style="width: 110px;">副将</th>
-            <th style="width: 110px;">大将</th>
-            <th style="width: 90px;">本数/勝数</th>
-            <th id="daihyosen-header" style="width: 110px; display: none;">代表戦</th>
+            <th>チーム名</th>
+            <th>先鋒</th>
+            <th>次鋒</th>
+            <th>中堅</th>
+            <th>副将</th>
+            <th>大将</th>
+            <th>本数/勝数</th>
+            <th id="daihyosen-header" style="display: none;">代表戦</th>
           </tr>
         </thead>
         <tbody>
           <!-- 自チーム -->
           <tr>
             <td class="team-cell editable-cell" rowspan="2">
-              <input type="text" value="<%= @score.my_team_name %>" placeholder="チーム名" data-field="my_team_name" style="height: 200px;">
+              <input type="text" value="<%= @score.my_team_name %>" placeholder="チーム名" data-field="my_team_name">
             </td>
             <% @team_members.each do |member| %>
               <td class="editable-cell">
@@ -386,16 +386,16 @@
   <div class="tech-panel" id="techPanel">
     <div class="tech-panel-title">技を入力してください</div>
     <div class="tech-buttons">
-      <button class="tech-btn" onclick="addTech('men')">メ<br><small style="font-size:10px;">面</small></button>
-      <button class="tech-btn" onclick="addTech('kote')">コ<br><small style="font-size:10px;">小手</small></button>
-      <button class="tech-btn" onclick="addTech('do')">ド<br><small style="font-size:10px;">胴</small></button>
-      <button class="tech-btn" onclick="addTech('tsuki')">ツ<br><small style="font-size:10px;">突き</small></button>
+      <button class="tech-btn" onclick="addTech('men')">メ<br><small>面</small></button>
+      <button class="tech-btn" onclick="addTech('kote')">コ<br><small>小手</small></button>
+      <button class="tech-btn" onclick="addTech('do')">ド<br><small>胴</small></button>
+      <button class="tech-btn" onclick="addTech('tsuki')">ツ<br><small>突き</small></button>
     </div>
     
     <div class="hansoku-buttons">
       <button class="hansoku-btn" onclick="addHansoku()">
-        <span style="font-size: 20px;">▲</span><br>
-        <small style="font-size: 11px;">反則</small>
+        <span>▲</span><br>
+        <small>反則</small>
       </button>
     </div>
     

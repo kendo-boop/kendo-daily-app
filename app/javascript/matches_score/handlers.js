@@ -50,6 +50,7 @@ function toggleDaihyosen() {
         actionHistory: []
       };
     }
+    renderDaihyosenScore();
   } else {
     hideDaihyosen();
     if (btn) {
@@ -194,9 +195,6 @@ function addTech(tech) {
   });
   
   member.is_draw = false;
-  member.is_encho = false;
-  member.is_hantei = false;
-  member.is_fusenshow = false;
   
   renderMemberScore(member, app.currentPosition);
 }
@@ -232,9 +230,6 @@ function addIndividualTech(tech) {
   });
   
   score.is_draw = false;
-  score.is_encho = false;
-  score.is_hantei = false;
-  score.is_fusenshow = false;
   
   renderIndividualScore();
 }
@@ -263,9 +258,6 @@ function addDaihyosenTech(tech) {
   });
   
   member.is_draw = false;
-  member.is_encho = false;
-  member.is_hantei = false;
-  member.is_fusenshow = false;
   
   renderDaihyosenScore();
 }

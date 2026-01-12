@@ -4,7 +4,7 @@
 }
 
 /* ========================================
-   ヘッダー
+    ヘッダー
    ======================================== */
 .score-header {
   background: white;
@@ -105,43 +105,28 @@
   gap: 10px;
 }
 
-/* ========================================
-   ボタン共通
-   ======================================== */
-.btn {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 4px;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-  display: flex;
+/* ボタン */
+.btn.btn-primary {
+  display: inline-flex;
   align-items: center;
-  gap: 5px;
-  text-decoration: none;
 }
 
-.btn-secondary {
-  background: #f5f5f5;
-  color: #616161;
+.daihyosen-btn-container {
+  text-align: right; 
+  margin-bottom: 12px; 
+  max-width: 1100px; 
+  margin-left: auto; 
+  margin-right: auto; 
+  padding: 0 24px;
 }
 
-.btn-secondary:hover {
-  background: #e0e0e0;
-}
-
-.btn-primary {
-  background: #33b5e5;
-  color: white;
-}
-
-.btn-primary:hover {
-  background: #2ba3d4;
+.btn.btn-secondary {
+  display: inline-flex;
+  align-items: center;
 }
 
 /* ========================================
-   コンテナ
+    コンテナ
    ======================================== */
 .score-container {
   max-width: 1100px;
@@ -150,7 +135,7 @@
 }
 
 /* ========================================
-   フォーム要素
+    フォーム要素
    ======================================== */
 .form-group input,
 .form-group select {
