@@ -1,18 +1,19 @@
 <% content_for :head do %>
   <%= stylesheet_link_tag "posts", "data-turbo-track": "reload" %>
+  <%= javascript_include_tag "post", "data-turbo-track": "reload", defer: true %>
 <% end %>
 
 <div class="row">
   <div class="col s12 m10 offset-m1 l8 offset-l2">
     
     <!-- タブ切り替え（みんなの投稿 / 自分の投稿） -->
-    <div class="card" style="margin-bottom: 20px;">
-      <div class="card-content" style="padding: 10px 15px;">
-        <div style="display: flex; gap: 10px;">
-          <%= link_to posts_path, class: "btn #{current_page?(posts_path) ? '' : 'btn-flat'}", style: "#{current_page?(posts_path) ? 'background: #33b5e5;' : 'color: #757575;'} text-transform: none; border-radius: 20px;" do %>
+    <div class="card tab-card">
+      <div class="card-content tab-content">
+        <div class="tab-buttons">
+          <%= link_to posts_path, class: "btn tab-btn #{current_page?(posts_path) ? 'active' : 'inactive'}" do %>
             <i class="material-icons left">forum</i>みんなの投稿
           <% end %>
-          <%= link_to my_posts_posts_path, class: "btn #{current_page?(my_posts_posts_path) ? '' : 'btn-flat'}", style: "#{current_page?(my_posts_posts_path) ? 'background: #33b5e5;' : 'color: #757575;'} text-transform: none; border-radius: 20px;" do %>
+          <%= link_to my_posts_posts_path, class: "btn tab-btn #{current_page?(my_posts_posts_path) ? 'active' : 'inactive'}" do %>
             <i class="material-icons left">person</i>自分の投稿
           <% end %>
         </div>
@@ -29,8 +30,7 @@
                               class: "post-textarea",
                               rows: "4" %>
             
-            <!-- プレビューエリア -->
-            <div id="media-preview" style="display: none; margin-bottom: 15px;"></div>
+            <div id="media-preview"></div>
             
             <div class="post-form-footer">
               <label class="post-media-btn">
@@ -71,31 +71,27 @@
               </div>
               
               <% if post.user == current_user %>
-                <div class="post-actions-menu" style="position: relative;">
-                  <!-- メニューボタン（…） -->
-                  <a href="javascript:void(0);" 
-                     class="post-menu-btn" 
-                     onclick="togglePostMenu(<%= post.id %>); return false;">
+                <div class="post-actions-menu">
+                  <a  href="javascript:void(0);" 
+                      class="post-menu-btn" 
+                      onclick="togglePostMenu(<%= post.id %>); return false;">
                     <i class="material-icons">more_vert</i>
                   </a>
                   
-                  <!-- ドロップダウンメニュー -->
-                  <div id="post-menu-<%= post.id %>" class="post-menu-dropdown" style="display: none;">
-                    <a href="#!" 
-                       class="post-delete-link delete-post-btn" 
-                       data-post-id="<%= post.id %>"
-                       data-post-content="<%= post.content.truncate(30) %>">
+                  <div id="post-menu-<%= post.id %>" class="post-menu-dropdown">
+                    <a  href="#!" 
+                        class="post-delete-link delete-post-btn" 
+                        data-post-id="<%= post.id %>"
+                        data-post-content="<%= post.content.truncate(30) %>">
                       <i class="material-icons">delete</i>削除
                     </a>
                   </div>
                   
-                  <!-- 削除用の隠しフォーム -->
                   <%= form_with model: post, 
                                 url: post_path(post), 
                                 method: :delete, 
                                 id: "delete-post-form-#{post.id}",
-                                class: "post-delete-form",
-                                style: "display: none;" do |f| %>
+                                class: "post-delete-form" do |f| %>
                   <% end %>
                 </div>
               <% end %>
@@ -153,16 +149,16 @@
                   <% end %>
                 <% end %>
                 
-                <a href="javascript:void(0);" 
-                   class="post-action-btn" 
-                   onclick="toggleComments(<%= post.id %>); return false;">
+                <a  href="javascript:void(0);" 
+                    class="post-action-btn" 
+                    onclick="toggleComments(<%= post.id %>); return false;">
                   <i class="material-icons">comment</i>
                   <span>コメント</span>
                 </a>
               </div>
               
               <!-- コメントセクション -->
-              <div class="comments-section" id="comments-section-<%= post.id %>" style="display: none;">
+              <div class="comments-section" id="comments-section-<%= post.id %>">
                 <div class="comments-header">
                   <i class="material-icons">chat_bubble</i>
                   <span>コメント</span>
@@ -175,11 +171,11 @@
                       <div class="comment-item" id="comment-<%= comment.id %>">
                         <div class="comment-header">
                           <span class="comment-user"><%= comment.user.profile.name %></span>
-                          <div style="display: flex; align-items: center; gap: 10px;">
+                          <div class="comment-actions">
                             <span class="comment-time"><%= time_ago_in_words(comment.created_at) %>前</span>
                             <% if comment.user == current_user %>
                               <%= link_to post_comment_path(post, comment), 
-                                          data: { turbo_method: :delete, turbo_confirm: 'コメントを削除しますか？' },
+                                          data: { turbo_method: :delete, turbo_confirm: 'コメントを削除しますか?' },
                                           remote: true,
                                           class: "comment-delete-btn" do %>
                                 <i class="material-icons">delete</i>
@@ -236,32 +232,30 @@
       </div>
       
     <% else %>
-      <div class="card">
+      <div class="card empty-state-card">
         <div class="card-content center-align">
-          <i class="material-icons large" style="color: #bdbdbd;">forum</i>
-          <p style="color: #9e9e9e; margin-top: 20px;">
+          <i class="material-icons large empty-icon">forum</i>
+          <p class="empty-message">
             <% if current_page?(my_posts_posts_path) %>
               まだ投稿がありません
             <% else %>
               まだ投稿がありません
             <% end %>
           </p>
-          <p style="color: #9e9e9e;">最初の投稿をしてみましょう！</p>
+          <p class="empty-sub-message">最初の投稿をしてみましょう!</p>
         </div>
       </div>
     <% end %>
     
     <!-- 投稿削除確認モーダル -->
     <div id="modal-delete-post-confirm" class="modal">
-      <div class="modal-content" style="padding: 35px 30px 25px 30px;">
+      <div class="modal-content delete-modal-content">
         <div class="delete-confirm-icon-wrapper">
           <div class="delete-confirm-icon-circle">
             <i class="material-icons delete-confirm-icon">delete_outline</i>
           </div>
         </div>
-        <h4 class="delete-confirm-title">
-          投稿を削除しますか？
-        </h4>
+        <h4 class="delete-confirm-title">投稿を削除しますか?</h4>
         <p class="delete-confirm-message">
           「<span id="delete-post-content" class="delete-confirm-todo-name"></span>」を削除します。<br>
           <span class="delete-confirm-warning">この操作は取り消せません。</span>
@@ -279,186 +273,3 @@
     
   </div>
 </div>
-
-<script>
-// コメントをトグル
-function toggleComments(postId) {
-  var commentsSection = document.getElementById('comments-section-' + postId);
-  if (commentsSection) {
-    if (commentsSection.style.display === 'none' || commentsSection.style.display === '') {
-      commentsSection.style.display = 'block';
-    } else {
-      commentsSection.style.display = 'none';
-    }
-  }
-  return false;
-}
-
-// 投稿メニューをトグル
-function togglePostMenu(postId) {
-  var menu = document.getElementById('post-menu-' + postId);
-  var allMenus = document.querySelectorAll('.post-menu-dropdown');
-  
-  allMenus.forEach(function(m) {
-    if (m.id !== 'post-menu-' + postId) {
-      m.style.display = 'none';
-    }
-  });
-  
-  if (menu) {
-    if (menu.style.display === 'none' || menu.style.display === '') {
-      menu.style.display = 'block';
-    } else {
-      menu.style.display = 'none';
-    }
-  }
-  
-  return false;
-}
-
-// プレビュー削除機能
-function removePreview() {
-  var previewArea = document.getElementById('media-preview');
-  var fileInput = document.getElementById('post_media_file');
-  
-  if (previewArea) {
-    previewArea.innerHTML = '';
-    previewArea.style.display = 'none';
-  }
-  
-  if (fileInput) {
-    fileInput.value = '';
-  }
-  
-  M.toast({html: 'ファイルを削除しました', classes: 'rounded'});
-}
-
-// ファイルプレビュー処理（重複防止のため関数化）
-function handleFilePreview(file) {
-  var previewArea = document.getElementById('media-preview');
-  if (!previewArea) return;
-  
-  previewArea.innerHTML = '';
-  previewArea.style.display = 'block';
-  
-  var reader = new FileReader();
-  
-  reader.onload = function(event) {
-    var previewContainer = document.createElement('div');
-    previewContainer.style.cssText = 'position: relative; max-width: 500px; margin: 0 auto 15px auto;';
-    
-    var previewItem = document.createElement('div');
-    previewItem.style.cssText = 'position: relative; border-radius: 8px; overflow: hidden; background: #f5f5f5;';
-    
-    if (file.type.startsWith('image/')) {
-      var img = document.createElement('img');
-      img.src = event.target.result;
-      img.style.cssText = 'width: 100%; height: auto; max-height: 400px; object-fit: contain; display: block;';
-      previewItem.appendChild(img);
-    } else if (file.type.startsWith('video/')) {
-      var video = document.createElement('video');
-      video.src = event.target.result;
-      video.controls = true;
-      video.style.cssText = 'width: 100%; height: auto; max-height: 400px; object-fit: contain; display: block; background: #000;';
-      previewItem.appendChild(video);
-    }
-    
-    var fileInfo = document.createElement('div');
-    fileInfo.style.cssText = 'padding: 8px 12px; background: rgba(0, 0, 0, 0.05); font-size: 0.9rem; color: #666; display: flex; justify-content: space-between; align-items: center;';
-    
-    var fileName = document.createElement('span');
-    fileName.textContent = file.name;
-    fileName.style.cssText = 'overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1;';
-    
-    var removeBtn = document.createElement('button');
-    removeBtn.type = 'button';
-    removeBtn.innerHTML = '<i class="material-icons" style="font-size: 18px;">close</i>';
-    removeBtn.style.cssText = 'background: #f44336; color: white; border: none; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; margin-left: 10px;';
-    removeBtn.onclick = removePreview;
-    
-    fileInfo.appendChild(fileName);
-    fileInfo.appendChild(removeBtn);
-    previewItem.appendChild(fileInfo);
-    previewContainer.appendChild(previewItem);
-    previewArea.appendChild(previewContainer);
-  };
-  
-  reader.readAsDataURL(file);
-}
-
-// ページ初期化処理
-function initializePage() {
-  // モーダルの初期化
-  var modals = document.querySelectorAll('.modal');
-  M.Modal.init(modals);
-  
-  // メニュー外クリックで閉じる
-  document.addEventListener('click', function(e) {
-    if (!e.target.closest('.post-actions-menu')) {
-      var allMenus = document.querySelectorAll('.post-menu-dropdown');
-      allMenus.forEach(function(menu) {
-        menu.style.display = 'none';
-      });
-    }
-  });
-  
-  // ファイル選択のイベントリスナー（既存のリスナーを削除してから追加）
-  var fileInput = document.getElementById('post_media_file');
-  if (fileInput) {
-    // 既存のイベントリスナーをクリア
-    var newFileInput = fileInput.cloneNode(true);
-    fileInput.parentNode.replaceChild(newFileInput, fileInput);
-    
-    // 新しいイベントリスナーを追加
-    newFileInput.addEventListener('change', function(e) {
-      var file = e.target.files[0];
-      if (file) {
-        M.toast({html: 'ファイルを選択しました', classes: 'rounded'});
-        handleFilePreview(file);
-      }
-    });
-  }
-  
-  // 削除モーダルの処理
-  var deletePostModal = document.getElementById('modal-delete-post-confirm');
-  if (deletePostModal) {
-    var deletePostModalInstance = M.Modal.getInstance(deletePostModal);
-    var currentPostId = null;
-    
-    document.querySelectorAll('.delete-post-btn').forEach(function(btn) {
-      btn.addEventListener('click', function(e) {
-        e.preventDefault();
-        currentPostId = this.getAttribute('data-post-id');
-        var postContent = this.getAttribute('data-post-content');
-        
-        document.getElementById('delete-post-content').textContent = postContent;
-        
-        var allMenus = document.querySelectorAll('.post-menu-dropdown');
-        allMenus.forEach(function(menu) {
-          menu.style.display = 'none';
-        });
-        
-        deletePostModalInstance.open();
-      });
-    });
-    
-    var confirmDeleteBtn = document.getElementById('confirm-delete-post-btn');
-    if (confirmDeleteBtn) {
-      confirmDeleteBtn.onclick = function() {
-        if (currentPostId) {
-          var form = document.getElementById('delete-post-form-' + currentPostId);
-          if (form) {
-            form.submit();
-          }
-        }
-      };
-    }
-  }
-}
-
-// 初回ロード
-document.addEventListener('DOMContentLoaded', initializePage);
-
-// Turboロード
-document.addEventListener('turbo:load', initializePage);
-</script>
