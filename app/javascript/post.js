@@ -113,7 +113,7 @@ function handleFilePreview(file) {
 // ページ初期化処理
 // ========================================
 
-document.addEventListener('DOMContentLoaded', function() {
+function initializePage() {
   // Materialize コンポーネントの初期化
   const modals = document.querySelectorAll('.modal');
   M.Modal.init(modals);
@@ -183,4 +183,12 @@ document.addEventListener('DOMContentLoaded', function() {
       };
     }
   }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  initializePage();
+});
+
+document.addEventListener('turbo:load', function() {
+  initializePage();
 });
