@@ -123,7 +123,77 @@
   padding: 40px 0;
 }
 
+/* TODOを追加リンク */
+.add-todo-link-wrapper {
+  margin: 16px 0 20px 0;
+  text-align: right;
+}
+
+.add-todo-link {
+  color: #33b5e5;
+  text-decoration: none;
+  font-weight: 400;
+  display: inline-flex;
+  align-items: center;
+}
+
+.add-todo-link i {
+  font-size: 20px;
+  margin-right: 4px;
+}
+
+/* 追加モーダル */
+.modal-add-todo {
+  max-width: 600px;
+}
+
+.modal-add-title {
+  font-size: 20px;
+  font-weight: 400;
+  color: #424242;
+  margin-bottom: 20px;
+}
+
+.modal-form-row {
+  margin-bottom: 10px;
+}
+
+.modal-field-label {
+  font-size: 14px;
+  color: #9e9e9e;
+}
+
+.modal-select-field,
+.modal-date-field {
+  display: block;
+  height: 42px;
+  padding: 8px;
+  border: 1px solid #9e9e9e;
+  border-radius: 4px;
+  margin-top: 8px;
+}
+
+.modal-submit-wrapper {
+  margin-top: 20px;
+}
+
+.modal-submit-btn {
+  background: #33b5e5;
+  width: 100%;
+  height: 42px;
+  line-height: 42px;
+  padding: 0;
+}
+
+.modal-cancel-link {
+  color: #9e9e9e;
+}
+
 /* 削除確認モーダル */
+.modal-delete-content {
+  padding: 35px 30px 25px 30px;
+}
+
 .delete-confirm-icon-wrapper {
   text-align: center;
   margin-bottom: 20px;
@@ -210,152 +280,163 @@
 }
 
 /* レスポンシブ対応 */
-
-/* 600px以下（タブレット・大画面スマホ） */
+/*スマートフォン用600px以下*/
 @media only screen and (max-width: 600px) {
   .card {
-    margin: 0.8rem 0;
+    margin: 0;
   }
 
   .card-content {
-    padding: 18px 16px;
+    padding: 15px 13px;
   }
 
   .card-title {
-    font-size: 19px !important;
+    font-size: 16px !important;
+  }
+
+  /* TODOを追加リンクの余白調整 */
+  .add-todo-link-wrapper {
+    margin: 8px 0 10px 0;
+  }
+
+  .add-todo-link {
+    font-size: 11px;
+  }
+
+  .add-todo-link i {
+    font-size: 14px;
+    margin-right: 3px;
   }
 
   .todos-collection {
-    margin: 16px 0 0 0;
+    margin: 13px 0 0 0;
   }
 
   .todos-collection .collection-item {
-    padding: 13px 16px;
-    margin-bottom: 10px;
+    padding: 11px 13px;
+    margin-bottom: 8px;
   }
 
   .todo-checkbox {
-    width: 15px !important;
-    height: 15px !important;
+    width: 13px !important;
+    height: 13px !important;
   }
 
   .todo-content {
-    margin-left: 17px;
+    margin-left: 14px;
   }
 
   .todo-title {
-    font-size: 13px;
+    font-size: 11px;
   }
 
   .todo-meta {
-    font-size: 10px;
-    margin-top: 4px;
-    gap: 7px;
+    font-size: 9px;
+    margin-top: 3px;
+    gap: 6px;
   }
 
   .todo-category-chip {
-    height: 19px;
-    line-height: 19px;
-    font-size: 9px;
-    padding: 0 8px;
+    height: 16px;
+    line-height: 16px;
+    font-size: 8px;
+    padding: 0 7px;
   }
 
   .todo-due-date-icon {
-    font-size: 12px;
+    font-size: 10px;
+  }
+
+  .todo-overdue {
+    font-size: 9px;
   }
 
   .todo-delete-btn {
-    padding: 4px;
+    padding: 3px;
   }
 
   .todo-delete-icon {
-    font-size: 17px;
-  }
-
-  /* 追加ボタン */
-  .card-content a[href="#modal-add-todo"] {
-    font-size: 13px;
-  }
-
-  .card-content a[href="#modal-add-todo"] i {
-    font-size: 17px;
-    margin-right: 3px;
+    font-size: 14px;
   }
 
   /* 空のメッセージ */
   .todos-empty-message {
-    padding: 33px 0;
-    font-size: 13px;
+    padding: 28px 0;
+    font-size: 11px;
   }
 
   /* モーダル */
-  .modal {
-    max-width: 90% !important;
-    width: 90% !important;
-  }
-
   .modal-content {
-    padding: 17px 13px !important;
+    padding: 14px 11px !important;
   }
 
-  .modal-content h4 {
-    font-size: 17px !important;
-    margin-bottom: 17px !important;
+  .modal-add-title {
+    font-size: 14px;
+    margin-bottom: 14px;
+  }
+
+  .input-field {
+    margin-bottom: 14px;
   }
 
   .input-field label {
-    font-size: 12px;
+    font-size: 10px;
   }
 
   .input-field input {
-    font-size: 12px;
+    font-size: 10px;
   }
 
+  /* セレクト・日付フィールド */
   .browser-default {
-    font-size: 12px !important;
-    height: 35px !important;
-    padding: 7px !important;
+    font-size: 10px !important;
+    height: 29px !important;
+    padding: 6px !important;
   }
 
   .btn {
-    height: 35px !important;
-    line-height: 35px !important;
-    font-size: 13px;
+    height: 29px !important;
+    line-height: 29px !important;
+    font-size: 11px;
   }
 
   /* 削除確認モーダル */
+  .modal-delete-content {
+    padding: 14px 11px 25px 11px;
+  }
+
   .delete-confirm-icon-circle {
-    width: 50px;
-    height: 50px;
+    width: 42px;
+    height: 42px;
   }
 
   .delete-confirm-icon {
-    font-size: 27px;
+    font-size: 22px;
   }
 
   .delete-confirm-title {
-    font-size: 15px;
-    margin-bottom: 13px;
+    font-size: 13px;
   }
 
   .delete-confirm-message {
-    font-size: 12px;
+    font-size: 10px;
   }
 
   .delete-modal-footer {
-    padding: 17px 20px 25px 20px;
-    gap: 8px;
+    padding: 14px 17px 21px 17px;
+    gap: 7px;
   }
 
   .delete-cancel-btn,
   .delete-confirm-btn {
-    min-width: 100px;
-    font-size: 13px;
-    padding: 0 14px;
+    min-width: 84px;
+    font-size: 11px;
+    padding: 0 12px;
+    height: 29px;
+    line-height: 29px;
   }
 
   .delete-confirm-btn-icon {
-    font-size: 15px;
+    font-size: 13px;
   }
 }
-
