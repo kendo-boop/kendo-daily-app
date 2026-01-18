@@ -1,5 +1,5 @@
 /* ========================================
-   デスクトップ・モバイル表示切り替え
+    デスクトップ・モバイル表示切り替え
    ======================================== */
 .desktop-only {
   display: block;
@@ -19,7 +19,7 @@
   }
 
   /* ========================================
-     スコアコンテナの調整
+      スコアコンテナの調整
      ======================================== */
   .score-container {
     padding: 0 12px 60px !important;
@@ -31,7 +31,7 @@
   }
 
   /* ========================================
-     モバイル用スコア表(90度回転レイアウト)
+      モバイル用スコア表(90度回転レイアウト)
      ======================================== */
   .mobile-score-table {
     width: 100% !important;
@@ -51,7 +51,7 @@
   }
 
   /* ========================================
-     ヘッダー行(チーム名が上部に横並び) - 縦幅を狭く
+      ヘッダー行(チーム名が上部に横並び) - 縦幅を狭く
      ======================================== */
   .mobile-corner-cell {
     width: 35px !important;
@@ -97,7 +97,7 @@
   }
 
   /* ========================================
-     縦書きテキスト(役職名用)
+      縦書きテキスト(役職名用)
      ======================================== */
   .vertical-text {
     writing-mode: vertical-rl;
@@ -114,7 +114,7 @@
   }
 
   /* ========================================
-     役職セル(左端の縦書き列)
+      役職セル(左端の縦書き列)
      ======================================== */
   .mobile-position-cell {
     width: 35px !important;
@@ -125,7 +125,7 @@
   }
 
   /* ========================================
-     選手名セル
+      選手名セル
      ======================================== */
   .mobile-player-name-cell {
     width: 20% !important;
@@ -162,7 +162,7 @@
   }
 
   /* ========================================
-     モバイル用反則マークの調整
+      モバイル用反則マークの調整
      ======================================== */
   .mobile-points .hansoku-mark {
     bottom: 5px;
@@ -195,7 +195,7 @@
   }
 
   /* ========================================
-     技記録エリア(モバイル)
+      技記録エリア(モバイル)
      ======================================== */
   .mobile-points {
     min-height: 50px;
@@ -218,7 +218,7 @@
   }
 
   /* ========================================
-     合計スコア(モバイル・最下部に配置) - 縦幅を狭く
+      合計スコア(モバイル・最下部に配置) - 縦幅を狭く
      ======================================== */
   .mobile-score {
     font-size: 12px !important;
@@ -453,7 +453,7 @@
 }
 
 /* ========================================
-    小型スマートフォン対応(500px以下)
+    スマートフォン対応(500px以下)
    ======================================== */
 @media only screen and (max-width: 500px) {
   .mobile-corner-cell,
@@ -569,141 +569,3 @@
   }
 }
 
-/* ========================================
-    極小スマートフォン対応(400px以下)
-   ======================================== */
-@media only screen and (max-width: 400px) {
-  .score-container {
-    padding: 0 8px 60px !important;
-  }
-
-  .score-table-wrapper {
-    padding: 8px !important;
-  }
-
-  .mobile-corner-cell,
-  .mobile-position-cell {
-    width: 30px !important;
-    padding: 3px 2px;
-  }
-
-  .mobile-corner-cell {
-    height: 20px !important;
-    padding: 1px !important;
-    line-height: 1 !important;
-  }
-
-  .mobile-position-cell {
-    height: 45px;
-  }
-
-  .vertical-text {
-    font-size: 8px;
-  }
-
-  .mobile-team-input {
-    font-size: 8px !important;
-    padding: 4px 2px 0 2px !important;
-    height: 18px !important;
-    line-height: normal !important;
-  }
-
-  .mobile-team-input::placeholder {
-    font-size: 6px;
-  }
-
-  .mobile-team-header {
-    padding: 1px !important;
-    height: 20px !important;
-    line-height: 1 !important;
-  }
-
-  .mobile-player-name-cell {
-    width: 20%;
-    padding: 0 !important;
-    height: 45px;
-  }
-
-  .mobile-player-name-cell input {
-    font-size: 9px;
-    padding: 6px 2px 0 2px !important;
-    height: 45px !important;
-    line-height: normal !important;
-  }
-
-  .mobile-player-name-cell input::placeholder {
-    font-size: 7px;
-  }
-
-  .mobile-points {
-    min-height: 45px;
-    height: 45px;
-    padding: 3px !important;
-  }
-
-  .mobile-score {
-    padding: 2px 3px !important;
-    height: 28px !important;
-    line-height: 1 !important;
-  }
-
-  .mobile-score .score-numerator,
-  .mobile-score .score-denominator {
-    font-size: 10px !important;
-    line-height: 1 !important;
-  }
-
-  .mobile-score .score-line {
-    width: 16px !important;
-    height: 1.5px !important;
-    margin: 1px 0 !important;
-  }
-
-  .mobile-score .score-winner::before {
-    width: 28px !important;
-    height: 28px !important;
-    border-width: 2px !important;
-  }
-
-  .mobile-score .score-loser::before {
-    border-left: 14px solid transparent !important;
-    border-right: 14px solid transparent !important;
-    border-bottom: 24px solid #e53935 !important;
-  }
-
-  .mobile-score .score-loser::after {
-    border-left: 11px solid transparent !important;
-    border-right: 11px solid transparent !important;
-    border-bottom: 20px solid white !important;
-  }
-
-  .tech-panel {
-    padding: 10px !important;
-    max-width: 90% !important;
-  }
-
-  .tech-panel-title {
-    font-size: 11px !important;
-    margin-bottom: 8px !important;
-  }
-
-  .tech-btn {
-    padding: 8px !important;
-    font-size: 12px !important;
-  }
-
-  .hansoku-btn {
-    padding: 7px 12px !important;
-    font-size: 12px !important;
-  }
-
-  .special-btn {
-    padding: 6px !important;
-    font-size: 9px !important;
-  }
-
-  .panel-actions button {
-    padding: 7px !important;
-    font-size: 10px !important;
-  }
-}

@@ -202,23 +202,6 @@
   }
 }
 
-@media only screen and (max-width: 400px) {
-  .mobile-points .point-circle {
-    width: 16px;
-    height: 16px;
-    border: 1.5px solid #000;
-    font-size: 9px;
-  }
-  
-  .mobile-points .point-text {
-    font-size: 9px;
-  }
-  
-  .mobile-points .point-comment {
-    font-size: 8px;
-  }
-}
-
 /* ========================================
    特殊マーク
    ======================================== */
@@ -346,29 +329,6 @@
   }
 }
 
-@media only screen and (max-width: 400px) {
-  .mobile-points .hansoku-mark {
-    bottom: 3px;
-    gap: 1.5px;
-  }
-  
-  .mobile-points .hansoku-triangle {
-    border-left: 4px solid transparent;
-    border-right: 4px solid transparent;
-    border-bottom: 7px solid #c62828;
-  }
-  
-  .mobile-points .hansoku-line {
-    height: 1.5px;
-    width: 18px;
-    top: 3px;
-  }
-  
-  .mobile-points .hansoku-mark-opponent {
-    top: 3px;
-  }
-}
-
 /* ========================================
    勝者マーク
    ======================================== */
@@ -419,12 +379,6 @@
   }
 }
 
-@media only screen and (max-width: 400px) {
-  .mobile-points .winner-circle-my,
-  .mobile-points .winner-circle-opponent {
-    border-width: 2px;
-  }
-}
 
 /* ========================================
    合計スコア
@@ -1220,95 +1174,3 @@
   }
 }
 
-@media only screen and (max-width: 400px) {
-  .score-table.individual-table {
-    width: 210px !important;
-  }
-
-  .score-table.individual-table th:nth-child(1),
-  .score-table.individual-table td:nth-child(1) {
-    width: 68px !important;
-  }
-
-  .score-table.individual-table th:nth-child(2),
-  .score-table.individual-table td:nth-child(2) {
-    width: 82px !important;
-  }
-
-  .score-table.individual-table th:nth-child(3),
-  .score-table.individual-table td:nth-child(3) {
-    width: 60px !important;
-  }
-
-  .score-table.individual-table th {
-    font-size: 9px !important;
-    padding: 3px 2px !important;
-    height: 26px !important;
-  }
-
-  .score-table.individual-table .editable-cell input {
-    font-size: 10px !important;
-    padding: 5px 2px !important;
-  }
-
-  .score-table.individual-table .team-cell {
-    padding: 5px 2px !important;
-    width: 68px !important;
-    height: 95px !important;
-  }
-
-  .score-table.individual-table .team-cell input {
-    font-size: 9px !important;
-    padding: 3px 2px !important;
-    height: 75px !important;
-  }
-
-  .score-table.individual-table .points-cell {
-    height: 56px !important;
-  }
-
-  .score-table.individual-table .point-circle {
-    width: 16px !important;
-    height: 16px !important;
-    font-size: 9px !important;
-  }
-
-  .score-table.individual-table .point-text {
-    font-size: 9px !important;
-  }
-
-  .score-table.individual-table .point-comment {
-    font-size: 8px !important;
-  }
-
-  .score-table.individual-table .total-score-cell {
-    font-size: 12px !important;
-    padding: 5px 3px !important;
-  }
-
-  .score-table.individual-table .score-numerator,
-  .score-table.individual-table .score-denominator {
-    font-size: 14px !important;
-  }
-
-  .score-table.individual-table .score-line {
-    width: 22px !important;
-  }
-
-  .score-table.individual-table .score-winner::before {
-    width: 38px !important;
-    height: 38px !important;
-  }
-
-  .score-table.individual-table .score-loser::before {
-    border-left: 21px solid transparent !important;
-    border-right: 21px solid transparent !important;
-    border-bottom: 38px solid #e53935 !important;
-  }
-
-  .score-table.individual-table .score-loser::after {
-    border-left: 18px solid transparent !important;
-    border-right: 18px solid transparent !important;
-    border-bottom: 34px solid white !important;
-  }
-}
