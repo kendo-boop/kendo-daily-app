@@ -4,8 +4,8 @@
 .tech-panel {
   position: fixed;
   bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
+  right: 15px;
+  left: auto;
   background: white;
   box-shadow: 0 4px 20px rgba(0,0,0,0.15);
   border-radius: 12px;
@@ -154,4 +154,92 @@
 
 .close-btn:hover {
   background: #e0e0e0;
+}
+
+/* ========================================
+    技入力パネル(モバイル) - 横長レイアウト
+   ======================================== */
+@media only screen and (max-width: 600px) {
+  .tech-panel {
+    max-width: 95%;
+    padding: 6px;
+    bottom: 8px;
+    left: 2.5%;
+  }
+
+  .tech-panel-title {
+    font-size: 9px;
+    margin-bottom: 4px;
+  }
+
+  /* 技ボタンを2行×2列に - 超小型化 */
+  .tech-buttons {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 4px;
+    margin-bottom: 4px;
+  }
+
+  .tech-btn {
+    padding: 4px 3px;
+    font-size: 11px;
+    line-height: 1.2;
+  }
+
+  /* 反則ボタンと特殊ボタンを横並びに */
+  .hansoku-buttons {
+    display: inline-flex;
+    margin-bottom: 0;
+    margin-right: 4px;
+    vertical-align: top;
+  }
+
+  .hansoku-btn {
+    padding: 4px 6px;
+    font-size: 9px;
+    min-width: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+  }
+
+  .hansoku-btn small {
+    font-size: 9px;
+    line-height: 1;
+  }
+
+  .hansoku-btn br {
+    display: none;
+  }
+
+  /* 特殊ボタン */
+  .special-buttons {
+    display: inline-flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 4px;
+    margin-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+    max-width: calc(100% - 58px);
+    vertical-align: top;
+  }
+
+  .special-btn {
+    flex: 0 0 auto;
+    min-width: 50px;
+    padding: 4px 4px;
+    font-size: 9px;
+    white-space: nowrap;
+  }
+
+  /* アクションボタン */
+  .panel-actions {
+    gap: 4px;
+  }
+
+  .panel-actions button {
+    padding: 5px 3px;
+    font-size: 9px;
+  }
 }
